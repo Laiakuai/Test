@@ -1,0 +1,23 @@
+c:\users\jie\documents\visual studio 2012\Projects\Ex3\Ex3\bin\Debug\Ex3.exe.config
+c:\users\jie\documents\visual studio 2012\Projects\Ex3\Ex3\bin\Debug\Ex3.exe
+c:\users\jie\documents\visual studio 2012\Projects\Ex3\Ex3\bin\Debug\Ex3.pdb
+c:\users\jie\documents\visual studio 2012\Projects\Ex3\Ex3\obj\Debug\Ex3.csprojResolveAssemblyReference.cache
+c:\users\jie\documents\visual studio 2012\Projects\Ex3\Ex3\obj\Debug\Ex3.FrmMain.resources
+c:\users\jie\documents\visual studio 2012\Projects\Ex3\Ex3\obj\Debug\Ex3.Properties.Resources.resources
+c:\users\jie\documents\visual studio 2012\Projects\Ex3\Ex3\obj\Debug\Ex3.csproj.GenerateResource.Cache
+c:\users\jie\documents\visual studio 2012\Projects\Ex3\Ex3\obj\Debug\Ex3.exe
+c:\users\jie\documents\visual studio 2012\Projects\Ex3\Ex3\obj\Debug\Ex3.pdb
+D:\workspace\Ex3\Ex3\obj\Debug\Ex3.csprojAssemblyReference.cache
+D:\workspace\Ex3\Ex3\obj\Debug\Ex3.FrmMain.resources
+D:\workspace\Ex3\Ex3\obj\Debug\Ex3.Properties.Resources.resources
+D:\workspace\Ex3\Ex3\obj\Debug\Ex3.csproj.GenerateResource.cache
+D:\workspace\Ex3\Ex3\obj\Debug\Ex3.csproj.CoreCompileInputs.cache
+D:\workspace\Ex3\Ex3\obj\Debug\Ex3.exe
+D:\workspace\Ex3\Ex3\obj\Debug\Ex3.pdb
+D:\workspace\Ex3\Ex3\bin\Debug\Ex3.exe.config
+D:\workspace\Ex3\Ex3\bin\Debug\Ex3.exe
+D:\workspace\Ex3\Ex3\bin\Debug\Ex3.pdb
+D:\workspace\Ex3\Ex3\bin\Debug\System.Collections.NonGeneric.dll
+D:\workspace\Ex3\Ex3\obj\Debug\Ex3.csproj.CopyComplete
+D:\workspace\Ex3\Ex3\obj\Debug\Ex3.login.resources
+D:\workspace\Ex3\Ex3\obj\Debug\Ex3.Register.resources
