@@ -1,0 +1,134 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>3 MyBatis与Spring整合</title>
+<style type="text/css">
+<!--
+p,td {
+	font-family: "宋体";
+	font-size: 26px;
+	font-weight: bold;
+}
+h1 {
+	font-family: "方正舒体";
+	font-size: 30px;
+	font-weight: bold;
+	color: #990000;
+}
+h2,caption{
+	font-family: "宋体";
+	font-size: 26px;
+	font-weight: bold;
+	color: #990000;
+}
+h3 {
+	font-family: "宋体";
+	font-size: 24px;
+	font-weight: bold;
+	color: #990000;
+}
+.STYLE1 {color: #0000FF}
+.STYLE2 {color: #000066}
+.STYLE3 {color: #FF0000}
+
+-->
+</style>
+</head>
+
+<body>
+<h1 align=center>3 MyBatis 与Spring整合</h1>
+<a name="top"></a>
+
+<p align=left><a href="#s1">1 整合环境搭建</a></p>
+<p align=left><a href="#s3">2 Mapper接口开发方式的整合 </a></p>
+<hr size=3 color=green>
+<a name="s1"></a><h1>1 整合环境搭建</h1>
+<p><span style="color: red;">案例</span>：
+	MyBatis基本应用中的<span style="background-color: #00FFFF">
+		数据库mybatis</span>，<span style="background-color: #00FFFF">表students</span>，
+			根据studentId进行学生信息查询。</p>
+<h2>1.1 pom.xml文件配置</h2>
+<p><span style="color: blue;">(1)</span>在IntelliJ IDEA中创建maven项目，不选择模板，
+	命名为<span style="color: blue;">spring-mybatis01</span>。</p>
+<p><span style="color: blue;">(2)</span>配置<span style="color: blue;">pom.xml</span>文件，，
+	取spring项目pom.xml文件和mybatis项目pom.xml文件的<span style="color:red;">并集</span>。<br/>
+	&nbsp;&nbsp;为了方便大家，提供了<span style="color: blue;">SM整合-spring-myBatis-pom.txt</span>
+	模板，可直接copy修改使用。
+</p>
+<hr/>
+<h2>1.2 编写配置文件</h2>
+<p><span style="color: blue;">(3)</span>在项目的src/main/resources目录下，
+	创建db.properties文件、log4j.properties文件、Spring的配置文件、MyBatis的配置文件。</p>
+<p><span style="background-color: yellow;">注意：</span>db.properties文件中数据库名称、密码等要根据实际项目修改。
+<br />&nbsp;&nbsp;&nbsp;&nbsp;log4j.properties调试项目包的前缀也应根据实际项目修改。
+</p>
+<p align="center"><img src="3MyBatis与Spring整合.files/配置文件.png"/></p>
+<p align="center"><img src="3MyBatis与Spring整合.files/mybatis-configXML1.png"/></p>
+
+
+<hr size=3 color=green>
+<a name="s2"></a><h1>2 Mapper接口开发方式的整合</h1>
+<h2>Spring配置文件applicationContext.xml</h2>
+<p>整合方向：将mybatis-config.xml中的数据源配置移交给Spring的applicationContext.xml。</p>
+<p align="center">
+<img border="0" src="3MyBatis与Spring整合.files/spring配置文件1.png">
+<img border="0" src="3MyBatis与Spring整合.files/spring配置文件2.png">
+</p>
+
+
+
+<p>&nbsp;&nbsp; Mapper接口编程方式只需要程序员编写Mapper接口（相当于DAO接口），然后由MyBatis框架根据接口的定义创建接口的动态代理对象，这个代理对象等同于DAO接口的实现类的方法。</p>
+<p>&nbsp;&nbsp;虽然使用Mapper接口编程的方式很简单，但是需要遵循以下<span style="background-color: #FFFF00">规范</span>。</span><br/>
+<span style="color: red;">①</span>Mapper接口的名称和对应Mapper.xml映射文件的名称必须一致；<br/>
+<span style="color: red;">②</span>Mapper.xml文件中的namespace与Mapper接口的类路径相同（即接口文件和映射文件需要放在同一个包中）；<br/>
+<span style="color: red;">③</span>Mapper接口中的方法名和Mapper.xml中定义的每个执行语句的id相同；<br/>
+<span style="color: red;">④</span>Mapper接口中方法的输入参数类型要和Mapper.xml中定义的每个SQL的parameterType的类型相同；<br/>
+<span style="color: red;">⑤</span>Mapper接口方法的输出参数类型要和Mapper.xml中定义的每个SQL的resultType的类型相同。
+</p>
+<p><span style="color: blue;">(4)</span>在src/main/java目录下，创建包
+	<span style="color: blue;">jmu.vo</span>包，
+	在该包中创建持久化类<span style="color: blue;">Students</span>。</p>
+<p align="center">
+	<img src="3MyBatis与Spring整合.files/Students.png"/>
+</p>
+<p><span style="color: blue;">(5)</span>在src/main/java目录下，创建包
+	<span style="color: blue;">jmu.mapper</span>包，
+	在该包下创建StudentsMapper<span style="background-color: cyan;">接口</span>
+	（<span style="color: blue;">StudentsMapper.java</span>）
+		以及对应的<span style="background-color: cyan;">映射文件</span>
+		（<span style="color: blue;">StudentsMapper.xml</span>）。</p>
+<p align="center">
+	<img src="3MyBatis与Spring整合.files/StudentsMapper包.png"/>
+</p>
+<p><span style="color: blue;">(6)</span>在MyBatis的配置文件
+	<span style="color: blue;">mybatis-config.xml</span>中，
+	引入<span style="color: blue;">StudentsMapper.xml</span>映射文件。</p>
+<p align="center">
+<img border="0" src="3MyBatis与Spring整合.files/mybatis-configXML2.png" ></p>
+<p><span style="color: blue;">(7)</span>在Spring的配置文件
+	<span style="color: blue;">applicationContext.xml</span>中，
+		创建一个id为studentsMapper的Bean。</p>
+<p align="center">
+<img border="0" src="3MyBatis与Spring整合.files/spring配置2.png"></p>
+<p><span style="color: blue;">(8)</span>为Students类创建测试类
+	<span style="color: blue;">StudentsTest</span>，编写测试方法
+	<span style="color: blue;">findStuByIdTest()</span>。</p>
+<p align="center">
+<img border="0" src="3MyBatis与Spring整合.files/测试结果.png"></p>	
+<p align="left">
+<span style="background-color: #FFFF00">存在问题：</span>
+需要针对每一个mapper进行配置，导致applicationContext.xml臃肿。</p>
+<p align="left">
+<span style="background-color: #FFFF00">解决方法：</span>
+通过Mapper的批量扫描来解决，从Mapper的包中扫描出Mapper的接口，自动创建代理对象，
+并且在Spring的容器中注册。</p>
+<p align="center">
+<img border="0" src="3MyBatis与Spring整合.files/Spring配置4.png" ></p>
+
+<p><span style="color: blue;">(9)</span>再次测试，仍能得到相同结果。</p>
+
+<hr size="3" color="green"/>
+</body>
+
+</html>

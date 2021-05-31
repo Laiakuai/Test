@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.jmu.mapper.StudentsMapper">
+    <!-- <if>元素使用 根据学生姓名和性别组合查询 -->
+    <select id="findStuByNameAndSex" parameterType="cn.jmu.po.Students" resultType="cn.jmu.po.Students">
+        select * from students where 1=1
+        <if test="studentName != null and studentName != ''">
+            and studentName like concat('%',#{studentName},'%')
+        </if>
+        <if test="sex !=null and sex != ''">
+            and sex = #{sex}
+        </if>
+    </select>
+
+    <!-- <choose>(<when><otherwise>)元素使用 根据学生姓名或班级号查询 -->
+    <select id="findStuByNameOrClassId" parameterType="cn.jmu.po.Students" resultType="cn.jmu.po.Students">
+        select * from students where 1=1
+        <choose>
+            <when test="studentName != null and studentName != ''">
+                and studentName like concat('%',#{studentName},'%')
+            </when>
+            <when test="classId != null and classId != ''">
+                and classId = #{classId}
+            </when>
+            <otherwise>
+                and sex is not null
+            </otherwise>
+        </choose>
+    </select>
+
+    <!-- <where>元素 -->
+    <select  id="findStuByNameAndSex2" parameterType="cn.jmu.po.Students" resultType="cn.jmu.po.Students">
+        select * from students
+        <where>
+            <if test="studentName != null and studentName != ''">
+                and studentName like concat('%',#{studentName},'%')
+            </if>
+            <if test="sex !=null and sex != ''">
+                and sex = #{sex}
+            </if>
+        </where>
+    </select>
+
+    <!-- <set>元素 -->
+    <update id="updateStu2" parameterType="cn.jmu.po.Students">
+        update students
+        <set>
+            <if test="studentName != null and studentName != ''">
+                studentName = #{studentName},
+            </if>
+            <if test="sex != null and sex != ''">
+                sex = #{sex},
+            </if>
+            <if test="classId != null and classId !=''">
+                classId = #{classId},
+            </if>
+        </set>
+        where studentId = #{studentId}
+    </update>
+
+    <!-- <foreach>元素 -->
+    <select id="findStuByClassIds" parameterType="list" resultType="cn.jmu.po.Students">
+        select * from students where classId in
+        <foreach collection="list" item="classId" index="index" open="(" close=")" separator=",">
+            #{classId}
+        </foreach>
+    </select>
+
+</mapper>

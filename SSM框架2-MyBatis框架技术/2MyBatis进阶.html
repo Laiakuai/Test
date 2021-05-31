@@ -1,0 +1,323 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>2 MyBatis进阶</title>
+<style type="text/css">
+<!--
+p,td {
+	font-family: "宋体";
+	font-size: 26px;
+	font-weight: bold;
+}
+h1 {
+	font-family: "方正舒体";
+	font-size: 30px;
+	font-weight: bold;
+	color: #990000;
+}
+h2,caption{
+	font-family: "宋体";
+	font-size: 26px;
+	font-weight: bold;
+	color: #990000;
+}
+h3 {
+	font-family: "宋体";
+	font-size: 24px;
+	font-weight: bold;
+	color: #990000;
+}
+.STYLE1 {color: #0000FF}
+.STYLE2 {color: #000066}
+.STYLE3 {color: #FF0000}
+
+-->
+</style>
+</head>
+
+<body>
+<h1 align=center>2 MyBatis 进阶</h1>
+<a name="top"></a>
+
+<p align=left><a href="#s1">1 动态SQL</a></p>
+<p align=left><a href="#s2">2 MyBatis的映射关系 </a></p>
+
+<hr size=3 color=green>
+<a name="s1"></a><h1>1 动态SQL</h1>
+<p>动态SQL是MyBatis的强大特性。</span></p>
+<table border="1" width="76%" align =center >
+<caption>MyBatis的动态SQL元素</caption>
+	<tr bgcolor=#99FFCC>
+		<td width="304">元素</span></td>
+		<td>说明</td>
+	</tr>
+	<tr>
+		<td width="304">&lt;if&gt;</td>
+		<td>判断语句，用于单条件分支判断</td>
+	</tr>
+	<tr>
+		<td width="304">&lt;choose&gt;(&lt;when&gt;、&lt;otherwise&gt;)</td>
+		<td>相当于Java中的switch…case…default语句，用于多条件分支判断</td>
+	</tr>
+	<tr>
+		<td width="304">&lt;where&gt;、&lt;set&gt;</td>
+		<td>辅助元素，用于处理一些SQL拼接问题</td>
+	</tr>
+		<tr>
+		<td width="304">&lt;foreach&gt;</td>
+		<td>循环语句，常用语in语句等列举条件中</td>
+	</tr>
+</table>
+<h2>&lt;if&gt;元素</h2>
+<p><span style="color: red;">例：</span>动态SQL元素实例——据<u>学生姓名</u>和<u>性别</u>的组合条件查询</p>
+<p><span style="color: blue">(1)</span>
+	在IntelliJ IDEA中，创建一个名为<span style="color: blue;">mybatis02</span>的maven项目，不选择模板。<br />
+	&nbsp;将配置模板中的<span style="color: blue;">MyBatis-pom.txt</span>
+	内容copy进<span style="color: blue;">pom.xml</span>中。
+</p>
+<p>&nbsp;将项目<span style="color: blue;">mybatis01</span>中的src/main/java下的
+	<span style="color: blue;">cn</span>包和src/main/resources下的
+	<span style="color: blue;">db.properties、log4j.properties、
+  mybatis-config.xml</span>复制到
+  <span style="color: blue;">mybatis02</span>项目中。
+</p>
+<p align="center">
+<img border="0" src="2MyBatis进阶.files/项目结构.png"></p>
+<p><span style="color: blue">(2)</span>修改映射文件<span style="color: blue">StudentsMapper.xml</span>，
+	在映射文件中使用&lt;if&gt;
+	元素编写根据学生姓名和性别的组合条件查询students表的动态SQL。
+</p>
+<p align="center">
+<img border="0" src="2MyBatis进阶.files/ifXML.png"></p>
+<p><span style="color: blue">(3)</span>创建测试类<span style="color: blue">StudentsTest</span>，编写测试方法
+	<span style="color: blue">findStuByNameAndSexTest()</span>。
+</p>
+<p align="center">
+<img border="0" src="2MyBatis进阶.files/if查询测试1.png"></p>
+<hr/>
+
+<h2>&lt;choose&gt;、&lt;when&gt;、&lt;otherwise&gt;元素</h2>
+<p><font color="#FF0000">例</font>：动态SQL元素实例：</p>
+<p><i>当学生姓名不为空，则只根据学生姓名进行查询；<br/>
+当学生姓名为空，而班级号不为空，则只根据班级号进行查询；<br/>
+当学生姓名和班级号都为空，则要求查询出所有性别不为空的学生。</i></p>
+<p><span style="color: blue">(1)</span>修改映射文件<span style="color: blue">StudentsMapper.xml</span>，使用
+	&lt;choose&gt;、&lt;when&gt;、&lt;otherwise&gt;元素。
+</p>
+<p align="center">
+<img border="0" src="2MyBatis进阶.files/chooseXML.png"></p>
+<p><span style="color: blue">(2)</span>在测试类<span style="color: blue">StudentsTest</span>中，编写测试方法
+	<span style="color: blue">findStuByNameAndSexTest()</span>。
+</p>
+<p align="center">
+<img border="0" src="2MyBatis进阶.files/choose测试1.png"></p>
+<p><span style="color: blue">★</span>将封装到对象stu中的studentName代码注释，进行测试。
+</p>
+<p><span style="color: blue">★</span>将封装到对象stu中的studentName和classId两行代码注释，进行测试。
+</p>
+<hr/>
+<h2><span lang="en-us">&lt;where&gt;</span>元素</h2>
+<p>在第一个案例中，映射文件中编写的SQL后面都加入了“where 1=1”的条件，如果将where后的“1=1”的条件去掉，
+	那么拼接出来的SQL语句如下：</p>
+<table border="1" width="67%">
+	<tr>
+		<td>select * from students <span style="background-color: #FFFF00">where 
+		and</span> studentName like concat('%',?,'%') and sex='男';</td>
+	</tr>
+</table>
+<p>针对这种情况，MyBatis提供了&lt;where&gt;元素来处理该问题。</p>
+<p><font color="#FF0000">☆</font>只有</span>&lt;where&gt;元素内的条件成立时，才会在拼接SQL中加入where关键字，否则不会添加。</span></p>
+<p><font color="#FF0000">☆</font>即使where之后的内容有多余的“AND”或“OR”，&lt;where&gt;元素也会自动将它们去除。</p>
+<p align="center">
+<img border="0" src="2MyBatis进阶.files/whereXML.png"></p>
+<h2>&lt;set&gt;元素</h2>
+<p>
+在Hibernate中，如果想要更新某一个对象，就需要发送所有的字段给持久化对象。然而在实际应用中，大多数情况下都只是更新某一个或几个字段。</span></p>
+<p><span style="color: red;">☆</span>MyBatis中提供了&lt;set&gt;元素实现<u>只更新需要更新</u>的字段，
+	并且会将SQL语句最后一个多余的<u><i>逗号</i></u>去除。</p>
+<p align="centers">
+<img border="0" src="2MyBatis进阶.files/setXML.png" ><br />
+<img border="0" src="2MyBatis进阶.files/set测试.png">
+</p>
+<hr/>
+<h2>&lt;foreach&gt;元素</h2>
+<p>MyBatis提供了用于数组和集合循环遍历的方式。</p>
+<p>&lt;foreach&gt;元素中的属性：<br/>
+<span style="color: red;">☆</span>item:配置循环中当前的元素<br/>
+<span style="color: red;">☆</span>index:配置当前元素在集合的位置下标<br/>
+<span style="color: red;">☆</span>collection:配置传递过来的参数类型，可以是array、list<span lang="en-us">(</span>或collection<span lang="en-us">)</span>、Map集合的键
+、POJO包装类中的数组或集合类型的属性名<br/>
+<span style="color: red;">☆</span>open和close:配置以什么符号将这些集合元素包装起来<br/>
+<span style="color: red;">☆</span>separator:配置各个元素的间隔符</p>
+<p align="center">
+<img border="0" src="2MyBatis进阶.files/foreachXML.png">
+<img border="0" src="2MyBatis进阶.files/foreach测试.png"></p>
+<hr color="green" size="3"/>
+
+<a name="s2"></a><h1>2 MyBatis的映射关系</h1>
+<p>
+<a href="b1">2.1 一对一映射</a><br/>
+<a href="b2">2.2 一对多映射</a><br/>
+<a href="b3">2.3 多对多映射</a><br/>
+</p>
+<p>业务背景：商品订单的简化模型</p>
+<p><span style="color: blue;">①</span>用户表<span style="color: red;">customer</span>：记录了购买商品的用户信息　<br/>
+<span style="color: blue;">②</span>订单表<span style="color: red;">orders</span>：记录了用户所创建的订单（购买商品的订单）<br/>
+<span style="color: blue;">③</span>订单明细表<span style="color: red;">orderdetail</span>：记录了订单的详细信息即购买商品的信息<br/>
+<span style="color: blue;">④</span>商品表<span style="color: red;">items</span>：记录了商品信息</p>
+<h2>表间的映射关系：</h2>
+<p><span style="color: blue;">①</span>用户表</span>customer和订单表orders<br/>
+<span style="color: blue;">☆</span>customer --> orders：一个用户可以创建多个订单，<span style="color: blue;">一对多</span><br/>
+<span style="color: red;">★</span>orders -->  customer：一个订单只由一个用户创建，<span style="color: red;">一对一</span></p>
+<p><span style="color: blue;">②</span>orders和orderdetail<br/>
+<span style="color: red;">★</span>orders --> orderdetail：
+一个订单可以购买多个商品，每个商品的购买信息在orderdetail记录，<span style="color: blue;">一对多</font><br/>
+<span style="color: blue;">☆</span>orderdetail --> orders：
+一个订单明细只能包括在一个订单中，<span style="color: red;">一对一 
+</span>
+</p>
+<p><span style="color: blue;">③</span>orderdetail和itesm<br/>
+<span style="color: blue;">☆</span>orderdetail --> items：一个订单明细只对应一个商品信息，
+<span style="color: red;">一对一</span><br/>
+<span style="color: blue;">☆</span>items --> orderdetail：一个商品可以包括在多个订单明细 ，
+<span style="color: blue;">一对多</span></p>
+<p>在数据库<span style="color: blue;">mybatis</span>中创建表customer、orders、orderdetail、items </p>
+
+<hr/>
+<h2><a name="b2"></a>2.1 一对一映射</h2>
+<p><span style="color: red;">例</span>：关联查询创建订单的用户——
+	<span style="background-color: #FFFF00">ResultType方法(有兴趣的了解)</span>。</p>
+<p><span style="color:#990000;">SQL语句</span>：查询的主表（订单表）、查询的关联表（客户表）</p>
+<p align="center">
+<img border="0" src="2MyBatis进阶.files/DB1.png" ></p>
+<p><span style="color: blue;">(1)</span>在IntelliJ IDEA中创建Maven项目<span style="color: blue;">mybatis03</span>，
+	不要选择模板，
+	将mybatis01</span>中的src/main/resources下的
+	<span style="color: blue;">db.properties、log4j.properties、
+  mybatis-config.xml</span>复制到
+  <span style="color: blue;">mybatis03</span>项目中。</p>
+<p><span style="color: blue;">(2)</span>在mybatis03项目下创建包<span style="color: blue;">cn.jmu.po</span>
+	，创建POJO类<span style="color: blue;">Customer</span>、<span style="color: blue;">Orders</span>。</p>
+<p><span style="color: blue;">(3)</span>包<span style="color: blue;">cn.jmu.po</span>内原始的Orders.java
+	不能映射全部字段，需要新创建一个POJO类<span style="color: blue;">OrdersCustomer</span>，
+	重写toString()</span>方法。</p>
+<p align="center">
+<img border="0" src="2MyBatis进阶.files/OrderCustomer.png" ></p>
+<p><span style="color: blue;">(4)</span>在mybatis03项目下创建包
+	<span style="color: blue;">cn.jmu.mapper</span>，
+	创建映射文件<font color="#0000FF">OrdersMapperCustomer.xml</font></span>。</p>
+<p align="center">
+<img border="0" src="2MyBatis进阶.files/一对一XML1.png"></p>
+<p><span style="color: blue;">(5)</span>在核心配置文件<span style="color: blue;">mybatis-config.xml</span>中，
+	引入Mapper映射文件。</p>
+<p align="center">
+<img border="0" src="2MyBatis进阶.files/mybaits-configXML2.png"></p>
+<p><span style="color: blue;">(6)</span>为类<span style="color: blue;">cn.jmu.po.OrdersCustomer</span>
+	创建测试类<span style="color: blue;">OrdersCustomerTest</span>，
+	编写测试方法<span style="color: blue;">findOrdersCustomer1Test()</span>。</p>
+<p align="center">
+<img border="0" src="2MyBatis进阶.files/一对一运行结果1.png"></p>
+
+<hr/>
+<p><span style="color: red;">例</span>：一对一映射查询——
+	<span style="background-color: #FFFF00">ResultMap方法</span></p>
+<p>使用resultMap映射的思路：在Orders类中添加Customer属性，将关联查询出来的用户信息映射到orders对象中的customer属性中。</p>
+<p>MyBatis在&lt;resultMap&gt;元素中包含一个&lt;association&gt;子元素来处理一对一的映射关系。</p>
+<p>&lt;association&gt;元素属性：<br/>
+<span style="color: blue;">☆</span>Property：指定映射到实体类对象属性，与表字段一一对应；<br/>
+<span style="color: blue;">☆</span>column：指定表中的对应字段；<br/>
+<span style="color: blue;">☆</span><font color="#0000FF">javaType</font>：指定映射到<span style="background-color: #FFFF00">实体对象属性</span>的类型；<br/>
+<span style="color: blue;">☆</span>select：指定引入嵌套查询的子SQL语句，该属性用于关联映射中的嵌套查询；<br/>
+<span style="color: blue;">☆</span>fetchType:是否启用延迟加载，默认为lazy(延迟加载)。</p>
+<p><span style="color: blue;">(1)</span>在mybatis03项目下创建包<span style="color: blue;">cn.jmu.po2</span>，
+	在该包下创建<span style="color: blue;">Orders</span>类和<span style="color: blue;">Customer</span>类
+，其中Orders类中增加customer属性。</p>
+<p align="center">
+<img border="0" src="2MyBatis进阶.files/Orders2.png"></p>
+<p><span style="color: blue;">(2)</span>在包<span style="color: blue;">cn.jmu.mapper</span>下
+修改映射文件<span style="color: blue;">OrdersMapperCustomer.xml</span>。</p>
+<p align="center">
+<img border="0" src="2MyBatis进阶.files/一对一XML2.png"></p>
+<p><span style="color: blue;">(3)</span>测试类<span style="color: blue;">OrdersCustomerTest</span>，
+	编写测试方法<span style="color: blue;">findOrdersCustomer2Test()</span>。</p>
+<p align="center">
+<img border="0" src="2MyBatis进阶.files/一对一测试2.png"></p>
+<h2>resultType和resultMap的区别：</h2>
+<p>
+<span style="color: blue;">☆</span><span style="color: darkred;">resultType：</span>使用resultType实现较为简单，
+如果POJO中没有包括查询出来的列名，需要增加列名对应的属性，即可完成映射。
+如果没有查询结果的特殊要求建议使用resultType。</p>
+<p>
+<span style="color: blue;">☆</span><span style="color: darkred;">resultMap：</span>
+需要单独定义resultMap，实现有点麻烦，如果对查询结果有特殊的要求，使用resultMap可以完成将关联查询映射POJO的属性中。</p>
+<p>
+<span style="color: blue;">☆</span>resultMap可以实现延迟加载，resultType无法实现延迟加载。　</p>
+<hr/>
+<h2><a name="b2"></a>2.2 一对多映射</h2>
+<p><span style="color: red;">例</span>：查询订单及关联的订单明细表</p>
+<p><span style="color: darkred;">SQL语句</span>：查询的主表（订单表）、查询的关联表（订单明细表）</p>
+<p align="center">
+<img border="0" src="2MyBatis进阶.files/DB2.png"></p>
+<p>MyBatis在&lt;resultMap&gt;元素中包含一个<span style="color: darkred;">&lt;collection&gt;</span>
+	子元素来处理<span style="color: darkred;">一对多</span>的映射关系。</p>
+<p>&lt;collection&gt;元素属性：<br/>
+<span style="color: blue;">☆</span>Property：指定映射到实体类对象属性，与表字段一一对应；<br/>
+<span style="color: blue;">☆</span>column：指定表中的对应字段；<br/>
+<span style="color: blue;">☆</span><span style="background-color: #FFFF00">ofType</span>：指定映射到实体对象
+中<span style="background-color: #FFFF00">集合类型属性所包含的元素</span>类型；<br/>
+<span style="color: blue;">☆</span>select：指定引入嵌套查询的子SQL语句，该属性用于关联映射中的嵌套查询；<br/>
+<span style="color: blue;">☆</span>fetchType:是否启用延迟加载，默认为lazy(延迟加载)。</p>
+<p align="left"><span style="color: blue;">(1)</span>在mybatis03项目下创建包
+	<span style="color: blue;">cn.jmu.po3</span>，在该包下创建<span style="color: blue;">Orders</span>类和
+		<span style="color: blue;">Customer</span>类
+和<span style="color: blue;">Orderdetail</span>类，
+其中Orders类中增加<span style="color: blue;">orderdetailList</span>属性。</span></p>
+<p align="center">
+<img border="0" src="2MyBatis进阶.files/Orders3.png"></p>
+<p align="left"><span style="color: blue;">(2)</span>在包<span style="color: blue;">cn.jmu.mapper</span>下
+修改映射文件<span style="color: blue;">OrdersMapperCustomer.xml</span>。</p>
+<p align="center">
+<img border="0" src="2MyBatis进阶.files/一对多XML.png" ></p>
+
+<p align="left"><span style="color: blue;">(3)</span>测试类<span style="color: blue;">OrdersCustomerTest</span>，
+	编写测试方法<span style="color: blue;">findOrderAndDetailTest()</span>。</p>
+<p align="center">
+<img border="0" src="2MyBatis进阶.files/一对多测试.png"></p>
+
+<hr/>
+<h2><a name="b3"></a>2.3 多对多映射</h2>
+<p><span style="color: red;">例</span>：查询用户及用户购买商品信息。</p>
+<p><span style="color: darkred;">SQL语句</span>：查询的主表（用户表）、查询的关联表（订单
+、订单明细表）--&gt;商品表</p>
+<p align="center">
+<img border="0" src="2MyBatis进阶.files/DB3.png"></p>
+<h2></h2>
+<p><span style="color: darkred;">多对多实现思路：</span><br/>
+<span style="color: blue;">☆</span>将用户信息映射到customer中。<br/>
+
+<span style="color: blue;">☆</span>在Customer类中添加订单列表属性List&lt;Orders&gt;  ordersList，将用户创建的订单映射到ordersList<br/>
+<span style="color: blue;">☆</span>在Orders中添加订单明细列表属性List&lt;OrderDetail&gt; orderdetialList，将订单的明细映射到orderdetialList<br/>
+
+<span style="color: blue;">☆</span>在orderdetialList中添加Items属性，将订单明细所对应的商品映射到Items</p>
+<p><span style="color: blue;">(1)</span>在mybatis03项目下创建包<span style="color: blue;">cn.jmu.po4</span>，
+	在该包下创建<span style="color: blue;">Customer</span>类
+、<span style="color: blue;">Orders</span>类、<span style="color: blue;">Orderdetail</span>类、
+  <span style="color: blue;">Items</span>类。</p>
+<p align="center">
+<img border="0" src="2MyBatis进阶.files/PO4类.png" width="970" height="432"></p>
+
+<p><span style="color: blue;">(2)</span>在包<span style="color: blue;">cn.jmu.mapper</span>下
+修改映射文件<span style="color: blue;">OrdersMapperCustomer.xml</span>。</p>
+<p>
+<img border="0" src="2MyBatis进阶.files/多对多XML.png" ></p>
+
+<p><span style="color: blue;">(3)</span>测试类<span style="color: blue;">OrdersCustomerTest</span>，
+	编写测试方法<span style="color: blue;">findCustomerAndItemsTest()</span>。</p>
+<p align="center">
+<img border="0" src="2MyBatis进阶.files/多对多测试.png" ></p>
+
+<hr color="green" size="3"/>
+</body>
+
+</html>

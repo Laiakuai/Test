@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jmu.mapper.StudentsMapper">
+    <!-- 根据学号studentId查询学生信息 -->
+    <select id="findStuByStudentId" parameterType="String" resultType="jmu.po.Students">
+     select * from students where studentId=#{studentId}
+   </select>
+</mapper>

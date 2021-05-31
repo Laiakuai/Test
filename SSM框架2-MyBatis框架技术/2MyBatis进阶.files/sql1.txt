@@ -1,0 +1,26 @@
+create database mybatis;
+
+use mybatis;
+
+show variables like '%char%';
+
+set character_set_database=utf8;
+set character_set_server=utf8;
+set character_set_connection=gbk;
+set character_set_client=gbk;
+set character_set_results=gbk;
+
+
+insert into  students(studentId,studentName,studentPwd,classId) values("2016110200","李四","123",10201621);
+
+
+select * from students where studentName like '%林%' and sex='男';
+
+select * from students where studentName like '%飞%' or classId=10201742;
+
+select * from students where studentId="2009110116";
+
+select * from students where classId in (10201622,10201611);
+
+insert into students(studentId,studentName,studentPwd,classId) values("2019","张三","123",2019011110);
+insert into students(studentId,studentName,studentPwd,classId) values("2020","李四","123",2019011210);

@@ -1,0 +1,170 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>2 SSM整合开发</title>
+<style type="text/css">
+<!--
+p,td {
+	font-family: "宋体";
+	font-size: 26px;
+	font-weight: bold;
+}
+h1 {
+	font-family: "方正舒体";
+	font-size: 30px;
+	font-weight: bold;
+	color: #990000;
+}
+h2,caption{
+	font-family: "宋体";
+	font-size: 26px;
+	font-weight: bold;
+	color: #990000;
+}
+h3 {
+	font-family: "宋体";
+	font-size: 24px;
+	font-weight: bold;
+	color: #990000;
+}
+.STYLE1 {color: #0000FF}
+.STYLE2 {color: #000066}
+.STYLE3 {color: #FF0000}
+
+-->
+</style>
+</head>
+
+<body>
+<h1 align=center>2 SSM<span lang="zh-cn">整合开发</span></h1>
+<p>&nbsp; </p>
+<p>由于Spring MVC是Spring框架中的一个模块，所以Spring MVC与Spring之间不存在整合的问题，只要引入相应的JAR包就可以直接使用。</p>
+<p>因此，SSM框架的整合只涉及 <span style="background-color: #00FFFF">Spring与MyBatis的整合</span> 
++ <span style="background-color: #00FFFF">Spring MVC与MyBatis的整合</span>。</p>
+<p>&nbsp;Spring与MyBatis的整合在Mybatis部分已介绍，<span style="background-color: #FFFF00">思路</span>：通过Spring实例化Bean，然后调用实例对象的查询方法来执行MyBatis映射文件中的SQL语句，如果能够正确查询出数据库中的数据，就认为Spring与MyBatis框架整合成功。</p>
+<p>&nbsp;加入Spring MVC整合，<span style="background-color: #FFFF00">思路</span>：可以通过前台页面来执行查询方法，并且查询出的数据能够在页面中正确显示，即可认为三大框架整合成功。</p>
+
+<hr size="3" color="green"/>
+<h2>项目架构</h2>
+<p align="center">
+<img border="0" src="2SSM整合开发.files/项目结构.png"></p>
+<h2>项目层次：</h2>
+<p><span style="color:blue;">(1)持久层</span>：该层由若干持久化类（实体类）组成；<br/>
+<span style="color:blue;">(2)数据访问层（DAO层）</span>：该层由若干DAO接口和MyBatis映射文件组成。接口名称统一以DAO结尾，并且MyBatis的映射文件名称要与接口的名称相同；<br/>
+<span style="color:blue;">(3)业务逻辑层（Service层）</span>：该层由若干Service接口和实现类（Impl）组成；<br/>
+<span style="color:blue;">(4)Web表现层</span>：该层主要包括Spring 
+MVC中的Controller类和JSP页面。<br/>
+Controller的实现类的任务：<br/>
+<span style="color:blue;">★</span>接收请求，接收参数，验证参数，处理请求<br/>
+<span style="color:blue;">★</span>封装参数，调用业务方法，返回处理结果数据。</p>
+<p align="center">
+<img border="0" src="2SSM整合开发.files/系统层次结构.png" ><br/></p>
+<hr/>
+<h2> 1. 创建项目，配置pom.xml文件</h2>
+<p><span style="color: darkred;">(1.1)</span> 在IntelliJ中，创建Maven项目，选择web模板，项目名<span style="color:blue;">ssmDemo01</span>。</p>
+<p><span style="color: darkred;">(1.2)</span> 完善Web项目结构，在src/main目录下创建java文件夹(<span style="color: blue;">设置为Source</span>)<br/>
+ &nbsp;&nbsp;在src/main目录下创建resources文件夹(<span style="color: blue;">设置为resources</span>)。
+</p>
+<p align="center">
+<img border="0" src="2SSM整合开发.files/web结构1.png"></p>
+<p><span style="color: darkred;">(1.3)</span> 为ssmDemo01项目添加tomcat服务器。</p>
+<p align="center">
+<img border="0" src="2SSM整合开发.files/tomcat服务器.png"></p>
+<p><span style="color: darkred;">(1.4)</span> 配置<span style="color: blue;">
+pom.xml</span>文件，导入SSM所需要的依赖。可从模板中复制。</p>
+<hr size="3" color="green"/>
+<h2>2.配置文件</h2>
+<p><span style="color: darkred;">(2.1)</span> 在src/main/resources路径下创建数据库常量配置文件
+   <span style="color: blue;">db.properties</span>，日志信息文件<span style="color: blue;">
+log4j.properties</span>。可从模板中复制。</p>
+<p align="center">
+<img border="0" src="2SSM整合开发.files/db属性.png"></p>
+<p><span style="color: darkred;">(2.2)</span> 在src/main/resources路径下创建MyBatis的配置文件
+	<span style="color: blue;">mybatis-config.xml</span>。
+	在MyBatis的配置文件中不需要再配置数据源信息以及mapper接口文件扫描器,
+	转交到Spring的配置文件中配置。</p>
+<p align="center">
+<img border="0" src="2SSM整合开发.files/mybatisXML.png"></p>
+<p><span style="color: darkred;">(2.3)</span> 在src/main/resources路径下创建Spring的配置文件
+<span style="color: blue;">applicationContext.xml</span>。</p>
+<p align="center">
+<img border="0" src="2SSM整合开发.files/applicationContextXML.png" ></p>
+<p><span style="color: darkred;">(2.4)</span> 在src/main/resources路径下创建Spring MVC的配置文件
+	<span style="color: blue;">springmvc.xml</span>。主要配置了用于扫描
+	<span style="color: red;">@Controller</span>注解的包扫描器、注解驱动器以及视图解析器。可从模板中复制。</p>
+<p align="center">
+<img border="0" src="2SSM整合开发.files/springmvcXML.png"></p>
+<p align="left"><span style="color: darkred;">(2.5)</span> 
+	打开src/main/webapp/WEB-INF/路径下的<span style="color: red;">web.xml</span>文件，
+	配置了Spring的文件监听器、编码过滤器以及Spring MVC的前端控制器。从模板中<span style="background-color: yellow;">完全</span>复制。</p>
+<p align="center">
+<img border="0" src="2SSM整合开发.files/webXML.png" ></p>
+<hr size="3" color="green"/>
+<h2>3.整合测试</h2>
+<p align="left"><span style="color: darkred;">(3.1)</span>在src/main/java目录下，
+	创建一个<span style="color: blue;">jmu.po</span>包，并在包中创建持久化类<span style="color: blue;">Students</span>。</p>
+<p align="center">
+<img border="0" src="2SSM整合开发.files/Students.png"></p>
+<p align="left"><span style="color: darkred;">(3.2)</span>
+	在src/main/java目录下，创建一个<span style="color: blue;">jmu.mapper</span>包，
+	并在包中创建:接口文件<span style="color: red;">StudentsMapper.java</span>。</p>
+<p align="center">
+<img border="0" src="2SSM整合开发.files/StudentsMapper.png" ></p>
+<p align="left"><span style="color: darkred;">(3.3)</span>
+	在src/main/<span style="background-color: yellow;">resources</span>目录下，创建一个<span style="color: blue;">jmu.mapper</span>包，
+	并在包中创建对应的映射文件<span style="color: red;">StudentsMapper.xml</span>,该映射文件的可从模板中复制修改。
+</p>
+<p align="center">
+<img border="0" src="2SSM整合开发.files/StudentsMapperXML.png" ></p>
+<p align="left">在<span style="color:blue;">applicationContext.xml</span>中使用包扫描的形式加入了扫描包
+	<span style="color: red;">jmu.mapper</span>下的所有接口及映射文件。</p>
+<p align="center">
+<img border="0" src="2SSM整合开发.files/mapper扫描包.png" ></p>
+<p align="left"><span style="color: darkred;">(3.4)</span>
+	在src/main/java目录下，创建一个<span style="color: blue;">jmu.service</span>包，
+	并在包中创建接口文件<span style="color: red;">StudentsService.java</span>。</p>
+<p align="center">
+<img border="0" src="2SSM整合开发.files/service接口.png" ></p>	
+<p align="left"><span style="color: darkred;">(3.5)</span>
+	在src/main/java目录下，创建一个
+<span style="color: blue;">jmu.service.impl</span>包，
+并在包中创建StudentsService接口的实现类<span style="color: red;">StudentsServiceImpl</span>。</p>
+<p align="center">
+<img border="0" src="2SSM整合开发.files/ServiceImpl.png"></p>
+<p align="left">在<span style="color:blue;">applicationContext.xml</span>中使用包扫描的形式加入了扫描包
+	<span style="color: red;">jmu.service</span>包。</p>
+<p align="center">
+<img border="0" src="2SSM整合开发.files/service扫描包.png" ></p>
+<p align="left"><span style="color: darkred;">(3.6)</span> 在src/main/java目录下，创建一个
+<span style="color: blue;">jmu.controller</span>包，并在包中创建用于处理页面请求的控制器类
+<span style="color: red;">StudentsController</span>。</p>
+<p align="center">
+<img border="0" src="2SSM整合开发.files/StudentsController.png"></p>
+
+<p align="left">
+<span style="color: darkred;">(3.7)</span> 
+在src/main/java目录下，创建一个<span style="color: blue;">jmu.test</span>包，并在包中创建测试类
+<span style="color: red;">StudentsTest.java</span>，编写按学号查找学生的测试方法。
+</p>
+<p align="center">
+&nbsp;&nbsp;&nbsp;
+<img border="0" src="2SSM整合开发.files/StudentsTest.png"></p>
+
+<p align="left"><span style="color: darkred;">(3.8)</span> 
+	在src/main/webapp目录下，创建按学号查询学生页面<span style="color: red;">queryStu.jsp</span>，页面提交到<span style="color: blue;">/findStuByStudentId.do</span>。</p>
+<p align="center">
+<img border="0" src="2SSM整合开发.files/queryStu.png"></p>
+<p align="left">在src/main/webapp目录下，
+创建显示学生信息的页面<span style="color: red;">stuShow.jsp</span>。</p>
+<p align="center">
+<img border="0" src="2SSM整合开发.files/showStu.png"></p>
+<p align="left"><span style="color: darkred;">(3.9)</span> 
+启动服务器，在浏览器访问地址：http://localhost:8080/ssmDemo01/queryStu.jsp。</p>
+<p align="center">
+<img border="0" src="2SSM整合开发.files/SSM运行结果.png"></p>
+
+<hr size="3" color="green"/>
+</body>
+
+</html>

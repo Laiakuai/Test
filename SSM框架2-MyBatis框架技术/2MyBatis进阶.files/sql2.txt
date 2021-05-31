@@ -1,0 +1,128 @@
+create database mybatis;
+
+use mybatis;
+
+
+drop table customer;
+
+create table customer(
+  id int(11) NOT NULL AUTO_INCREMENT,
+  username varchar(32) NOT NULL,
+  address varchar(256) DEFAULT NULL,
+  PRIMARY KEY (id)
+);
+
+insert into customer(id,username,address) values (1,"王五","北京地址1");
+insert into customer(id,username,address) values (10,"张三","河南郑州");
+insert into customer(id,username,address) values (16,"小明","福建厦门");
+insert into customer(id,username,address) values (22,"小亮","福建泉州");
+insert into customer(id,username,address) values (24,"小红","上海徐家汇");
+
+/******创建订单表******/
+drop table orders;
+
+create table orders(
+  id int(11) not null auto_increment,
+  user_id int(11) not null comment '下单用户id',
+  number varchar(32) not null comment '订单号',
+  createtime datetime not null comment '创建订单时间',
+  primary key(id),
+  foreign key(user_id) references customer(id) on delete cascade on update cascade
+);
+
+insert into orders(user_id,number,createtime) values(1,"1000010","2020-01-04 13:22:35");
+insert into orders(user_id,number,createtime) values(1,"1000011","2020-01-21 13:22:41");
+insert into orders(user_id,number,createtime) values(10,"1000012","2020-01-25 20:12:35");
+insert into orders(user_id,number,createtime) values(10,"1000013","2020-02-11 09:08:10");
+insert into orders(user_id,number,createtime) values(16,"1000014","2020-02-11 09:17:10");
+insert into orders(user_id,number,createtime) values(22,"1000015","2020-02-12 11:22:10");
+insert into orders(user_id,number,createtime) values(24,"1000016","2020-02-13 09:18:10");
+
+select * from orders;
+
+/******创建商品表******/
+drop table items;
+
+create table items(
+  id int(11) not null auto_increment,
+  name varchar(32) not null comment '商品名称',
+  price float(10,1) not null comment '商品价格',
+  primary key(id)
+);
+
+insert into items(name,price) values("台式机",3000.0);
+insert into items(name,price) values("笔记本",6000.0);
+insert into items(name,price) values("背包",200.0);
+insert into items(name,price) values("手机",1800.0);
+insert into items(name,price) values("护手霜",25.0);
+insert into items(name,price) values("唇膏",30.0);
+
+s
+select * from items;
+
+/******创建订单详情表******/
+drop table orderdetail;
+
+create table orderdetail(
+  id int(11) not null auto_increment,
+  orders_id int(11) not null comment '订单id',
+  items_id int(11) not null comment '商品id',
+  items_num int(11) default null comment '商品购买数量',
+  primary key(id),
+  foreign key(orders_id) references orders(id),
+  foreign key(items_id) references items(id)
+);
+
+insert into orderdetail(orders_id,items_id,items_num) values(3,1,1);
+insert into orderdetail(orders_id,items_id,items_num) values(3,2,2);
+insert into orderdetail(orders_id,items_id,items_num) values(4,3,1);
+insert into orderdetail(orders_id,items_id,items_num) values(4,6,3);
+insert into orderdetail(orders_id,items_id,items_num) values(2,5,1);
+insert into orderdetail(orders_id,items_id,items_num) values(2,1,1);
+insert into orderdetail(orders_id,items_id,items_num) values(3,4,2);
+insert into orderdetail(orders_id,items_id,items_num) values(5,6,1);
+insert into orderdetail(orders_id,items_id,items_num) values(5,5,4);
+insert into orderdetail(orders_id,items_id,items_num) values(6,2,1);
+
+select * from orderdetail;
+
+
+
+/*****  一对一查询  ******/
+select 
+      orders.*,
+      customer.username,customer.address
+from 
+      orders,customer
+where 
+      orders.user_id=customer.id;
+
+/*****  一对多查询  ******/
+select 
+      orders.id,orders.number,orders.createtime,
+      customer.username,
+      orderdetail.id orderdetail_id,
+      orderdetail.items_id,
+      orderdetail.items_num,
+      orderdetail.orders_id
+from 
+      orders,customer,orderdetail
+where 
+      orders.user_id=customer.id and orderdetail.orders_id=orders.id;
+
+/******** 多对多查询 *****/
+select 
+  customer.username,
+  orders.number,
+  orderdetail.id orderdetail_id,
+  orderdetail.items_id,
+  orderdetail.items_num,
+  orderdetail.orders_id,
+  items.name items_name,
+  items.price items_price
+from
+  orders,
+  customer,
+  orderdetail,
+  items
+WHERE orders.user_id = customer.id and orderdetail.orders_id=orders.id and orderdetail.items_id = items.id;

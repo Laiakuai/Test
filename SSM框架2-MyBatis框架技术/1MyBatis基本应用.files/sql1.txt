@@ -1,0 +1,39 @@
+create database mybatis;
+
+use mybatis;
+
+drop table students;
+
+create table students(
+studentId varchar(20) primary key,
+studentName varchar(30),
+studentPwd varchar(20),
+sex varchar(2),
+classId int(8)
+);
+
+insert into  students values("2018110116","谢亚飞","123","男",10201842);
+insert into  students values("2018130173","罗维林","123","女",10201841);
+insert into  students values("2018110143","苏梦雪","123","女",10201842);
+insert into  students values("2018110177","谭笑生","123","男",10201841);
+insert into  students values("2018110174","林飞宇","123","男",10201821);
+
+select * from students;
+
+
+
+create table classes(
+classId int(8) primary key,
+className varchar(40)
+);
+
+insert into classes values(10201741,"信管1711");
+insert into classes values(10201721,"软件1711");
+insert into classes values(10201841,"信管1811");
+insert into classes values(10201842,"信管1812");
+insert into classes values(10201821,"软件1811");
+insert into classes values(10201822,"软件1812");
+insert into classes values(10201811,"计算1811");
+insert into classes values(10201822,"软件1812");
+insert into classes values(10201831,"网络1811");
+insert into classes values(10201832,"网络1812");

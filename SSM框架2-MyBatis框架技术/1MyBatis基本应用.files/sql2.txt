@@ -1,0 +1,19 @@
+
+use mybatis;
+
+
+drop table t_user;
+
+create table t_user(
+ t_id int primary key auto_increment,
+ t_name varchar(20),
+ t_age int
+);
+
+insert into  t_user(t_name,t_age) values("Lucy",25);
+insert into  t_user(t_name,t_age) values("Lily",21);
+insert into  t_user(t_name,t_age) values("Jim",22);
+
+
+select * from t_user;
+

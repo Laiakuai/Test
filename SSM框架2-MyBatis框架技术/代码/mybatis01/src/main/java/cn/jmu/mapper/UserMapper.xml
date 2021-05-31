@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.jmu.mapper.UserMapper">
+    <resultMap type="cn.jmu.po.User" id="myResultMap">
+        <id property="id" column="t_id"/>
+        <id property="name" column="t_name"/>
+        <id property="age" column="t_age"/>
+    </resultMap>
+    <!-- 查找所有用户的信息 -->
+    <select id="findAllUser" resultMap="myResultMap">
+      select * from t_user;
+   </select>
+</mapper>

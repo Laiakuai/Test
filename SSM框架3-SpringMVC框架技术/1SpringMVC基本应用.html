@@ -1,0 +1,182 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>1 SpringMVC基本应用</title>
+<style type="text/css">
+<!--
+p,td {
+	font-family: "宋体";
+	font-size: 26px;
+	font-weight: bold;
+}
+h1 {
+	font-family: "方正舒体";
+	font-size: 30px;
+	font-weight: bold;
+	color: #990000;
+}
+h2,caption{
+	font-family: "宋体";
+	font-size: 26px;
+	font-weight: bold;
+	color: #990000;
+}
+h3 {
+	font-family: "宋体";
+	font-size: 24px;
+	font-weight: bold;
+	color: #990000;
+}
+.STYLE1 {color: #0000FF}
+.STYLE2 {color: #000066}
+.STYLE3 {color: #FF0000}
+
+-->
+</style>
+</head>
+
+<body>
+<h1 align=center>1 SpringMVC基本应用</h1>
+<p>&nbsp; Spring MVC是Spring提供的一个实现Web MVC设计模式的轻量级Web框架。它与Struts2框架一样，都属于MVC框架，但其使用和性能等方面比Struts2更加优异。</p>
+<p>Spring MVC具有如下<span style="background-color: #FFFF00">特点</span>：</p>
+<p><span style="color: blue;">①</span>是Spring框架的一部分，可以方便地利用Spring提供的其他功能；<br/>
+<span style="color: blue;">②</span>灵活性强，易于与其它框架集成；<br/>
+<span style="color: blue;">③</span>提供了一个前端控制器DispatcherServlet，使开发人员无需额外开发控制器对象；<br/>
+<span style="color: blue;">④</span>可自动绑定用户输入，并能正确的转换数据类型；<br/>
+<span style="color: blue;">⑤</span>内置了常见的校验器，可以校验用户输入，如果校验不能通过，会重定向到输入表单；<br/>
+<span style="color: blue;">⑥</span>支持国际化。可以根据用户区域显示多国语言；<br/>
+<span style="color: blue;">⑦</span>支持多视图技术（JSP、Velocity和FreeMarker等视图技术）；<br/>
+<span style="color: blue;">⑧</span>使用基于XML的配置文件，在编辑后，不需要重新编译应用程序。</p>
+<p align=left><a href="#s1">1 Spring MVC的工作流程</a></p>
+<p align=left><a href="#s2">2 Spring MVC实例1</a></p>
+<p align=left><a href="#s3">3 Spring MVC实例2（基于注解开发） </a></p>
+
+<hr size="3" color="green"/>
+<h1><a name="s1"></a>1 Spring MVC的工作流程</h1>
+<p align="center">
+<img border="0" src="1SpringMVC基本应用.files/SpringMVC工作原理.png" width="1213" height="518"></p>
+<p><span style="color: blue;">①</span>用户通过Browser向Server发送请求，请求会被Spring 
+MVC的<span style="color: blue;">前端控制器DispatcherServlet拦截</span>；<br/>
+<span style="color: blue;">②</span>DispatcherServlet拦截请求后，会调用<span style="color: blue;">HandlerMapping处理器映射器</span>；<br/>
+<span style="color: blue;">③</span>处理器映射器根据请求URL找到具体的处理器，生成处理器对象及处理器拦截器（若有），一并返回给DispatcherServlet。<br/>
+<span style="color: blue;">④</span>DispatcherServlet会通过返回信息选择合适的<font color="#0000FF">HandlerAdapter（处理器适配器）</font>；<br/>
+<span style="color: blue;">⑤</span>HandlerAdapter会调用并执行<span style="color: blue;">Handler（处理器）</span>，这里的处理器指的就是程序中编写的Controller类，也被称之为后端控制器；<br/>
+<span style="color: blue;">⑥</span>Controller执行完成后，会返回一个ModelAndView对象，该对象中会包含<u><i>视图名 
+</i></u>或包含 <i><u>视图模型和视图名</u></i>；<br/>
+<span style="color: blue;">⑦</span>HandlerAdapter将ModelAndView对象返回给DispatcherServlet；<br/>
+<span style="color: blue;">⑧</span>DispatcherServlet会根据ModelAndView对象选择一个合适的<span style="color: blue;">ViewResolver</span>(视图解析器);<br/>
+<span style="color: blue;">⑨</span>ViewResolver解析后，会向DispatcherServlet中返回具体的View(</span>视图);</span><br/>
+<span style="color: blue;">⑩</span>DispatcherServlet对View进行渲染（即将模型数据填充至视图中）；<br/>
+<span style="color: blue;">&#9322;</span>视图渲染结果会返回给客户端Browser显示。</p>
+<hr size="3" color="green"/>
+<h1><a name="s2"></a>2 Spring MVC实例</h1>
+<p><span style="color: blue;">(1)</span>在IntelliJ中用Maven使用web模板，创建web项目<span style="color: blue;">springmvc01</span>。</p>
+<p><span style="color: blue;">(2)</span>完善Web项目结构，在src/main目录下创建java文件夹(<span style="color: blue;">设置为Source</span>)<br/>
+ &nbsp;&nbsp;在src/main目录下创建resources文件夹(<span style="color: blue;">设置为resources</span>)。
+</p>
+<p align="center"><img src="1SpringMVC基本应用.files/目录结构.png"/></p>
+<p>&nbsp;&nbsp;为springmvc01项目添加tomcat服务器。</p>
+<p align="center"><img src="1SpringMVC基本应用.files/tomcat服务器.png"/></p>
+<p> &nbsp;&nbsp;配置<span style="color: blue;">
+pom.xml</span>文件，导入SSM所需要的依赖。</p>
+<p><span style="color: blue;">(3)</span>打开webapp\WEB-INF\lib目录下的<span style="color: blue;">web.xml</span>文件，
+	配置SpringMVC的前端控制器<span style="color: blue;">DispatcherServlet</span>。可从模板中copy。
+</p>
+<p align="center">
+<img border="0" src="1SpringMVC基本应用.files/webXML1.png"></p>
+<p><span style="color: blue;">(4)</span>在src/main/resources下，创建配置文件<span style="color: blue;">springmvc.xml</span>，
+	在文件中配置控制器信息。可从模板中copy。</p>
+<p align="center">
+<img border="0" src="1SpringMVC基本应用.files/springmvcXML1.png"></p>	
+<p><span style="color: blue;">(5)</span>在src/main/java下，创建包<span style="color: blue;">jmu.controller</span>，
+	在该包下创建控制器类<span style="color: blue;">FirstController</span>，
+	<span style="background-color: #00FFFF">实现Controller接口</span>。</p>
+<p align="center">
+<img border="0" src="1SpringMVC基本应用.files/FirstController.png"></p>
+<p>&nbsp;&nbsp;修改<span style="color: blue;">springmvc.xml</span>文件，配置处理器Handle，
+	添加映射<span>“/firstController.do”</span>请求。</p>
+<p align="center">
+<img border="0" src="1SpringMVC基本应用.files/映射1.png"></p>
+<p><span style="color: blue;">(6)</span>在webapp路径下，创建一个页面文件
+	<span style="color: blue;">myfirst.jsp</span>，在该页面中使用EL表达式获取msg中的信息。</p>
+<p align="center">
+<img border="0" src="1SpringMVC基本应用.files/myfirstJSP.png" /></p>
+<p><span style="color: blue;">(7)</span>启动项目，测试应用。</p>
+<p align="center">
+<img border="0" src="1SpringMVC基本应用.files/实例1运行结果.png" ></p>
+<h2>实例1的工作流程</h2>
+<p align="center">
+<img border="0" src="1SpringMVC基本应用.files/实例1工作流程.png" ></p>
+<hr size="3" color="green"/>
+
+<h1><a name="s3"></a>3 Spring MVC实例2（基于注解开发）</h1>
+<h2>★核心类——DispatcherServlet</h2>
+<p>DispatcherServlet的全名是org.springframework.web.servlet.DispatcherServlet，
+	它在程序中充当前端控制器的角色。使用时，配置在<span style="background-color: #00FFFF">
+		web.xml</span>中。</p>
+<p align="center">
+<img border="0" src="1SpringMVC基本应用.files/Dispatcher.png"></p>
+<h2>★Controller注解类型</h2>
+<p>org.springframework.stereotype.Controller注解类型用于指示Spring类的实例是一个控制器，
+	其注解形式为<span style="background-color: #00FFFF">@Controller</span>。
+	该注解在使用时不需要再实现Controller接口。只需要将@Controller注解加入到控制器类上，
+	然后通过Spring的扫描机制找到了该注解的控制器即可。</p>
+<p>Controller接口的实现类只能处理一个单一的请求动作，
+	而基于注解的控制器可以同时处理多个请求动作，
+	因此在实际开发中通常都会使用<u>基于注解</u>的形式。</p>
+<p>为了保证Spring能够找到控制类，还需要在SpringMVC的配置文件中添加相应的扫描配置信息，
+	具体如下：</span><br/>
+<span style="color: blue;">(1)</span>pom.xml中需有<span style="color: red;">
+	spring-aop.jar</span>的依赖，模板中已添加了；<br/>
+<span style="color: blue;">(2)</span>在配置文件的声明中引入spring-context，springmvc.xml的模板中已添加了；<br/>
+<span style="color: blue;">(3)</span>使用<span style="color: red;">&lt;context:component-scan&gt;</span>
+元素指定需要扫描的类包。</p>
+<p align="center">
+<img border="0" src="1SpringMVC基本应用.files/Controller.png" ></p>
+<h2>★RequestMapping注解类型</h2>
+<p>Spring通过@Controller注解找到相应的控制器类后，
+	还需要知道控制器内部对每一个请求是如何处理的，
+	则需要使用org.springframework.web.bind.annotation.RequestMapping注解类型。
+	@RequestMapping可以使用注解在<u><i>一个方法</i></u> 或 <u><i>一个类</i></u> 上。</p>
+<p align="center">
+<img border="0" src="1SpringMVC基本应用.files/Controller2.png"></p>
+<h2>请求处理方法的返回类型</h2>
+<p>常见的请求处理方法的返回类型有ModelAndView、String。</p>
+<p><span style="color: blue;">(1)</span>ModelAndView类型可以添加Model数据，并指定视图；</p>
+<p align="center">
+<img border="0" src="1SpringMVC基本应用.files/Controller3.png"></p>
+<p><span style="color: blue;">(2)</span>String类型的返回值可以跳转视图，但不能携带数据；
+	（可以通过Model类型的输入参数携带数据）</p>
+<p align="center">
+<img border="0" src="1SpringMVC基本应用.files/Controller4.png" ></p>
+<p align="center">
+<img border="0" src="1SpringMVC基本应用.files/Controller5.png">
+<img border="0" src="1SpringMVC基本应用.files/Controller6.png" ></p>
+<h2>★核心类——ViewResolver视图解析器</h2>
+<p align="center">
+<img border="0" src="1SpringMVC基本应用.files/viewResolver.png" ></p>
+<hr/>
+<p><font color="#FF0000">案例</font>：基于注解的Spring MVC应用</p>
+<p><span style="color: blue;">(1)</span>在web项目springmvc01中，打开路径
+	src/main/resources下的<span>springmvc.xml</span>配置文件，添加扫描配置。</p>
+	<p align="center">
+<img border="0" src="1SpringMVC基本应用.files/springmvcXML2.png" ></p>
+
+<p><span style="color: blue;">(2)</span>在src/main/java下的包<span style="color: blue;">jmu.controller</span>
+	包下创建类<span style="color: blue;">SecondController</span>，
+	在类和方法上添加相应的注解，不需要再实现Controller接口。</span></p>
+<p align="center">
+<img border="0" src="1SpringMVC基本应用.files/SecondController.png" >&nbsp;
+<img border="0" src="1SpringMVC基本应用.files/FirstController.png"></p>
+<p><span style="color: blue;">(3)</span>在<span style="color:red;">webapp</span>路径
+	下创建页面文件<span style="color: blue;">mysecond.jsp</span>。</p>
+<p align="center">
+<img border="0" src="1SpringMVC基本应用.files/mysecond.png" ></p>
+<p><span style="color: blue;">(4)</span>启动项目，测试应用。</p>
+<p align="center">
+<img border="0" src="1SpringMVC基本应用.files/实例2运行结果.png" ></p>
+<hr size="3" color="green"/>
+</body>
+
+</html>

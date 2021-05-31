@@ -1,0 +1,16 @@
+
+use mybatis;
+
+set character_set_database=utf8;
+set character_set_server=utf8;
+set character_set_connection=gbk;
+set character_set_client=gbk;
+set character_set_results=gbk;
+
+select * from students where studentName like '%ÁÖ%' and sex='ÄĞ';
+
+select * from students where studentName like '%·É%' or classId=10201622;
+
+select * from students where studentId="2009110116";
+
+select * from students where classId in (10201622,10201611);
