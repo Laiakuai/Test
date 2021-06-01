@@ -1,0 +1,602 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>1 Spring基本应用-maven版</title>
+<style type="text/css">
+<!--
+p,td {
+	font-family: "宋体";
+	font-size: 26px;
+	font-weight: bold;
+}
+h1 {
+	font-family: "方正舒体";
+	font-size: 30px;
+	font-weight: bold;
+	color: #990000;
+}
+h2,caption{
+	font-family: "宋体";
+	font-size: 26px;
+	font-weight: bold;
+	color: #990000;
+}
+h3 {
+	font-family: "宋体";
+	font-size: 24px;
+	font-weight: bold;
+	color: #990000;
+}
+.STYLE1 {color: #0000FF}
+.STYLE2 {color: #000066}
+.STYLE3 {color: #FF0000}
+
+-->
+</style>
+</head>
+
+<body>
+<h1 align=center>1 Spring基本应用</h1>
+<p>&nbsp; Spring是当前主流的Java Web开发框架，是一种轻量级开源框架，它以IoC（Inversion of Control反转控制）和AOP（Aspect Oriented Programming面向切面编程）为内核，
+使用基本的JavaBean来完成以前只能由EJB完成的工作，取代了EJB的臃肿、低效的开发模式。</p>
+<p align="center">
+<img border="0" src="1Spring基本应用.files/简历.jpg" width="774" height="950"></p>
+<a name="top"></a>
+
+<p align=left><a href="#s1">1 Spring的入门程序</a></p>
+<p align=left><a href="#s2">2 Spring中的Bean </a></p>
+<p align=left><a href="#s3">3 Spring的AOP技术 </a></p>
+<p align=left><a href="#s4">4 Spring小结 </a></p>
+<hr size=3 color=green>
+<a name="s1"></a><h1>1  Spring的入门程序 —— Maven版本</h1>
+<p><span style="color: red;">注意：</span>这里我们只是了解Spring的目录结构，<span style="background-color: yellow;">不需要下载</span>，下载的任务交给Maven。</p>
+<p>&nbsp; Spring的第一个版本是在2004年发布的，目前使用5.3.6版本，
+	名称为：<span lang="en-us">spring-5.3.6.RELEASE-dist.zip</span>，
+	下载URL为：“<a href="/https://repo.spring.io/simple/libs-release-local/org/springframework/spring/">
+		https://repo.spring.io/simple/libs-release-local/org/springframework/spring/</a>”。
+		下载后，将压缩包解压到自定义的文件夹中，解压后的目录结构如图所示。</p>
+<p align="center">
+<img border="0" src="1Spring基本应用.files/URL.png"> </p>
+<p align="center">
+<img border="0" src="1Spring基本应用.files/Spring解压缩包.png" >
+<img border="0" src="1Spring基本应用.files/lib包.png"></p>
+<p>Spring开发时需要用的基本JAR包：</p>
+<p><font color="#000066">☆</font>spring-<span lang="en-us"><font color="#0000FF">core</font>-5.3.6.jar:</span>包含Spring框架基本的核心工具类</p>
+<p><font color="#000066">☆</font>spring-<span lang="en-us"><font color="#0000FF">beans</font>-5.3.6.jar:</span>包含访问配置文件、创建和管理Bean以及IoC操作相关类</p>
+<p><font color="#000066">☆</font>spring-<span lang="en-us"><font color="#0000FF">context</font>-5.3.6.jar:</span>提供了在基础IoC功能上的扩展服务，如邮件服务、远程访问、缓存</p>
+<p><font color="#000066">☆</font>spring-<span lang="en-us"><font color="#0000FF">expression</font>-5.3.6.jar:</span>定义了Spring的表达式语言</p>
+
+<hr/>
+<h2>Spring的入门程序开发</h2>
+<p><span style="color: blue;">(1)</span>
+	在IntelliJ IDEA中，创建一个名为<span style="color: blue;">spring01</span>的maven项目，
+		注意<span style="background-color: yellow;">不要</span>选择模板。</p>
+<p align="center">
+<img border="0" src="1Spring基本应用.files/spring01-1.png"><br />
+<img border="0" src="1Spring基本应用.files/spring01-2.png">
+</p>
+<p><span style="color: blue;">(2)</span>
+	修改<span style="color: blue;">pom.xml</span>文件，从提供的模板
+	<span style="color: darkblue;">sprint-pom.txt</span>
+	中复制粘贴，导入Spring依赖的jar包，首次导入速度比较慢。</p>
+<p align="center">
+<img border="0" src="1Spring基本应用.files/pom-xml1.png">
+</p>
+<p><span style="color: blue;">(3)</span>在目录<span style="color: blue;">src/main/resources</span>下，
+	创建Spring的配置文件<span style="color: red;">applicationContext.xml</span>，
+	可从提供的模板<span style="color: darkblue;">applicationContext.xml</span>
+	直接copy。</p>
+<p align="center">
+<img border="0" src="1Spring基本应用.files/appContext1.png">
+</p>
+<p><span style="background-color: #FFFF00">Tips：</span>配置文件的模板可以在spring框架的解压文件夹中的doc目录，在<span lang="en-us">spring-framework-reference</span>文件夹下打开html文件夹，找到Core<span lang="en-us">.html</span>文件下的1.2.2小节中的<span lang="en-us">Configuration</span> 
+metadata中找到配置文件的约束信息。初学者只需复制到项目的配置文件中使用即可。</p>
+<p align="center">
+<img border="0" src="1Spring基本应用.files/配置信息模板.png"></p>
+<p><span style="color: blue;">(4)</span>在目录<span style="color: blue;">src/main/java</span>下，
+	创建包<span style="color: blue;">jmu.ioc</span>，并在包中创建接口<span style="blue">StudentDAO</span>。</p>
+<p align="center">
+<img border="0" src="1Spring基本应用.files/StudentDAO代码.png">
+</p>
+<p><span style="color: blue;">(5)</span>在包<span style="color: blue;">jmu.ioc</span>下创建接口实现类<span style="blue">StudentDAOImpl</span>
+	，实现接口中的say()方法。</p>
+<p align="center">
+<img border="0" src="1Spring基本应用.files/StudentDAOImpl代码.png">
+</p>
+<p><span style="color: blue;">(6)</span>在路径<span style="color: blue;">src/main/resources</span>下打开Spring配置文件
+	<span style="blue">applicationContext.xml</span>，注册bean。
+</p>
+<p align="center">
+<img border="0" src="1Spring基本应用.files/XML1代码.png">
+</p>
+<p><span style="color: blue;">(7)</span>编写测试程序，打开<span style="color: blue;">StudentDAOImpl.java</span>文件，
+	选择“StudentDAOImpl”文字，按快捷键“Alt+Enter”，在弹出的选项中选择“Create Test”。
+会自动在路径<span>src/test/java/jmu/ioc</span>下创建测试文件
+	<span style="blue">StudentDAOImplTest.java</span>。
+</p>
+<p align="center">
+<img border="0" src="1Spring基本应用.files/测试文件1.png">
+<img border="0" src="1Spring基本应用.files/测试文件2.png"><br />
+<img border="0" src="1Spring基本应用.files/测试文件3.png">
+</p>
+<p>运行效果如下图所示。</p>
+<p align="center">
+<img border="0" src="1Spring基本应用.files/测试文件4.png"></p>
+<p>如果运行时报错：<span style="color: blue;">Error : java 不支持发行版本5</span>,可以参考<a href="https://blog.csdn.net/qq_22076345/article/details/82392236">
+	https://blog.csdn.net/qq_22076345/article/details/82392236
+</a>网页解决。</p>
+<p align="center">
+<img border="0" src="1Spring基本应用.files/error1.png"></p>
+ 
+<hr/>
+<h2>依赖注入的概念</h2>
+<p><font color="#990000">依赖注入</font><span lang="en-us">(Dependency Injection DI)</span>与<font color="#990000">反转控制</font><span lang="en-us">(IoC 
+Inversion of Control)</span>含义相同，不同角度描述而已。</p>
+<p>某个Java对象（调用者）需要调用另一个Java对象（被调用者，即被依赖对象）</p>
+<p><font color="#0000FF">传统模式：</font>调用者采用“<span lang="en-us">new </span>被调用者”方式创建，强耦合</p>
+<p><font color="#0000FF">Spring框架：</font><br/>
+<font color="#000066">☆</font>对象的实例不再由调用者创建，而是由Spring容器创建。控制权由<u><i>应用代码</i></u>转移到<u><i>Spring容器</i></u>，<font color="#0000FF">控制权</font>发生了<font color="#0000FF">反转</font>。<br/>
+<font color="#000066">☆</font>Spring容器负责将<u><i>被依赖对象</i></u>赋值给<u><i>调用者的成员变量</i></u>，相当于为调用者<font color="#0000FF">注入</font>了它<font color="#0000FF">依赖</font>的实例。</p>
+<hr/>
+<h2>依赖注入的实现方式</h2>
+<p><font color="#000066">☆</font>属性setter方法注入：通过调用<u><i>无参数构造器</i></u>或无参静态工厂方法实例化Bean后，调用<u><i>该Bean的setter方法</i></u>，即可实现setter方法的依赖注入。</p>
+<p><font color="#000066">☆</font>构造方法注入：指IoC容器使用构造方法注入被依赖的实例。基于构造方法的依赖注入通过调用<u><i>带参数的构造方法</i></u>来实现，每个参数代表着一个依赖。</p>
+<hr size=3  color=green>
+<a name="s2"></a><h1>2 Spring<span lang="zh-cn">中的Bean</span></h1>
+<p>Spring可以被看作一个大型工厂，这个工厂的作用就是生产和管理Spring容器中的Bean。</p>
+<p>
+<a href="b1">2.1 Bean的配置</a><br/>
+<a href="b2">2.2 Bean的实例化</a><br/>
+<a href="b3">2.3 Bean的作用域</a><br/>
+<a href="b3">2.4 Bean的装配方式</a>
+</p>
+<hr/>
+<h2><a name="b1"></a>2.1 Bean的配置</h2>
+<p>
+&nbsp; 在Spring中，XML配置文件的根元素是<span lang="en-us">&lt;beans&gt;</span>，<span lang="en-us">&lt;beans&gt;</span>中包含多个<span lang="en-us">&lt;bean&gt;</span>子元素，每一个<span lang="en-us">&lt;bean&gt;</span>子元素定义了一个Bean，并描述了该Bean和被装配到Spring容器中。</p>
+<table border="1" width="80%" align=center>
+<caption><span lang="en-us">&lt;</span>bean<span lang="en-us">&gt;</span>元素的常用属性及其子元素</caption>
+	<tr bgcolor=#CCFFCC>
+		<td width="204">属性/子元素名称</td>
+		<td>描述</td>
+	</tr>
+	<tr>
+		<td width="204">id</td>
+		<td>Bean的唯一标识符</td>
+	</tr>
+	<tr>
+		<td width="204">name</td>
+		<td>name属性可以为Bean指定多个名称，每个名称之间用逗号或分号隔开</td>
+	</tr>
+	<tr>
+		<td width="204">class</td>
+		<td>指定了该Bean的具体实现类，必须是一个完整的类名</td>
+	</tr>
+		<tr>
+		<td width="204">scope</td>
+		<td>设定Bean实例的作用域，有：<span lang="en-us">singleton(</span>单例<span lang="en-us">-</span>默认值<span lang="en-us">)、prototype(原型)</span>、request、session、<span lang="en-us">globalSession</span>、<span lang="en-us">application</span>、websocket。</td>
+	</tr>
+	<tr>
+		<td width="204">constructor-arg</td>
+		<td>可用此元素传入构造参数进行实例化。该元素的index属性指定构造参数的序号<span lang="en-us">(</span>从0开始<span lang="en-us">)，type属性指定构造参数的类型，参数值可以通过ref</span>属性或value属性直接指定，也可以通过ref或value子元素指定</td>
+	</tr>
+	<tr>
+		<td width="204" height="46">property</td>
+		<td height="46">
+		用于调用Bean实例中的setter方法完成属性赋值，从而完成依赖注入。该元素的name属性指定Bean实例中的相应属性名，ref属性或value属性用于指定参数值</td>
+	</tr>
+		<tr>
+		<td width="204">ref</td>
+		<td><span lang="en-us">&lt;property&gt;</span>、<span lang="en-us">&lt;constructor-arg&gt;</span>元素的属性或子元素，可以是Bean工厂中某个Bean实例的引用</td>
+	</tr>
+	<tr>
+		<td width="204">value</td>
+		<td><span lang="en-us">&lt;property&gt;</span>、<span lang="en-us">&lt;constructor-arg&gt;</span>元素的属性或子元素，可以直接指定一个常量值</td>
+	</tr>
+	<tr>
+		<td width="204">list</td>
+		<td>用于封装List或数组类型的依赖注入</td>
+	</tr>
+		<tr>
+		<td width="204">set</td>
+		<td>用于封装Set类型属性的依赖注入</td>
+	</tr>
+	<tr>
+		<td width="204">map</td>
+		<td>用于封装Map类型属性的依赖注入</td>
+	</tr>
+	<tr>
+		<td width="204">entry</td>
+		<td><span lang="en-us">&lt;map&gt;</span>元素的子元素，用于设置一个键值对，其key属性为键，ref或value为值</td>
+	</tr>
+</table>
+<p>
+&nbsp; <span lang="zh-cn">在配置文件中，通常一个普通的Bean只需要定义</span>id<span lang="zh-cn">（或name）和class两个属性即可。</span></p>
+<p align="center">
+&nbsp;
+<img border="0" src="1Spring基本应用.files/Bean的配置.png" ></p>
+<hr/>
+<h2><a name="b2"></a>2.2 Bean的实例化</h2>
+<p>
+在Spring中，要想使用容器中的Bean，需要实例化。实例化Bean有三种方式：<br/>
+A.构造器实例化<font color="#990000">（最常用）</font><br/>
+B.静态工厂实例化（有兴趣自学）<br/>
+C.实例工厂方式实例化（有兴趣自学）</p>
+<h2>A.构造器实例化</h2>
+<p>构造器实例化指Spring容器通过Bean对应类中默认的<font color="#990000">无参数方法</font>来实例化Bean。</p>
+<p><span style="color: red;">例：构造器实例化</span></p>
+<p><span style="color: blue;">(1)</span>在spring01的Web项目下路径src/main/java下
+	创建一个<span style="color: blue;">jmu.constructor</span>包，
+	在该包中创建<span style="color: blue;">Bean1</span>类。</p>
+<p align="center">
+<img border="0" src="1Spring基本应用.files/Bean1代码.png"></p>
+<p><span style="color: blue;">(2)</span>在<span style="color: blue;">applicationContext.xml</span>中，
+	在配置文件中定义一个id为<span style="color: blue;">bean1</span>的<span style="color: blue;">Bean</span>，
+		并通过class属性指定其对应的实现类为Bean1。</p>
+<p align="center">
+<img border="0" src="1Spring基本应用.files/XML2.png"></p>
+<p><span style="color: blue;">(3)</span>创建测试类<span style="color: blue;">Bean1Test</span>，
+	来测试构造器能否实例化Bean。
+</p>
+<p align="center">
+<img border="0" src="1Spring基本应用.files/测试文件bean1.png"></p>
+
+<hr/>
+<h2><a name="b3"></a>2.3 Bean的作用域</h2>
+<p>
+Spring容器为Bean的实例定义了7种作用域。</p>
+<table border="1" width="77%" align=center>
+	<tr  bgcolor=#CCFFCC>
+		<td width="231">作用域</td>
+		<td>说明</td>
+	</tr>
+	<tr>
+		<td width="231">singleton单例<font color="#FF0000">☆</font></td>
+		<td>在Spring容器中将只有一个实例，无论有多少个Bean引用它，始终将指向同一个对象，<font color="#990000">默认</font></td>
+	</tr>
+	<tr>
+		<td width="231">prototype原型<font color="#FF0000">☆</font></td>
+		<td>每次通过Spring容器获取的prototype定义的Bea<span lang="en-us">n</span>时，容器都将创建一个新的Bean实例</td>
+	</tr>
+	<tr>
+		<td width="231">request</td>
+		<td>在一次HTTP请求中，容器会返回该Bean的同一个实例，且仅在当前HTTP Request内有效</td>
+	</tr>
+	<tr>
+		<td width="231">session</td>
+		<td>在一次HTTP Session中，容器会返回该Bean的同一个实例，且仅在当前HTTP Session内有效</td>
+	</tr>
+	<tr>
+		<td width="231">globalSession</td>
+		<td>在一个全局的HTTP Session中，容器会返回该Bean的同一个实例，且仅在使用portlet上下文时有效</td>
+	</tr>
+	<tr>
+		<td width="231">application</td>
+		<td>为每个ServletContext对象创建一个实例，仅在Web相关的ApplicationContext中生效</td>
+	</tr>
+	<tr>
+		<td width="231">websocket</td>
+		<td>为每个websocket对象创建一个实例，仅在Web相关的ApplicationContext中生效</td>
+	</tr>
+</table>
+<h2>A.Singleton作用域</h2>
+<p>&nbsp; 
+Bean的作用域为singleton时，Spring容器就只会存在一个共享的Bean实例，并且所有对Bean的请求，只要id与该Bean的id属性相匹配，就会返回同一个Bean实例。是Spring容器的<font color="#990000">默认</font>作用域。</p>
+<p><span style="color: red;">例：singleton作用域</span></p>
+
+<p><span style="color: blue;">(1)</span>在spring01的Web项目下路径src/main/java下
+	创建一个<span style="color: blue;">jmu.scope</span>包，
+	在该包中创建<span style="color: blue;">Scope</span>类。</p>
+<p align="center">
+<img border="0" src="1Spring基本应用.files/Scope代码.png"></p>
+<p><span style="color: blue;">(2)</span>在<span style="color: blue;">applicationContext.xml</span>中，
+	在配置文件中定义一个id为<span style="color: blue;">scope1</span>的<span style="color: blue;">Bean</span>，
+	并通过class属性指定其对应的实现类为Scope。</p>
+<p align="center">
+<img border="0" src="1Spring基本应用.files/XML3.png"></p>
+<p><span style="color: blue;">(3)</span>创建测试类<span style="color: blue;">ScopeTest</span>，
+	来测试singleton的作用域。
+</p>
+<p align="center">
+<img border="0" src="1Spring基本应用.files/测试文件scope1.png"></p>
+
+<hr/>
+<h2>B.prototype作用域</h2>
+<p>&nbsp; 对需要保持会话状态的Bean应该使用prototype作用域，Spring容器会为每一个对该Bean的请求都创建一个新的实例。</p>
+<p><span style="color: red;">例：prototype作用域</span></p>
+
+<p><span style="color: blue;">(1)</span>在<span style="color: blue;">applicationContext.xml</span>中，
+	在配置文件中再定义一个id为<span style="color: blue;">scope2</span>的<span style="color: blue;">Bean</span>，
+	并通过class属性指定其对应的实现类为Scope。</p>
+<p align="center">
+<img border="0" src="1Spring基本应用.files/XML4.png"></p>
+<p><span style="color: blue;">(2)</span>在测试类<span style="color: blue;">ScopeTest</span>
+	中添加测试方法<span style="color: blue;">scopeTest2()</span>来测试prototype的作用域。
+</p>
+<p align="center">
+<img border="0" src="1Spring基本应用.files/测试文件scope2.png"></p>
+
+<hr color="green" size=3/>
+<h2><a name="b4"></a>2.4 Bean的装配方式</h2>
+<p>
+Spring提供了多种形式的Bean装配方式：<br/>A.<span lang="zh-cn">基于XML的装配</span><br/>B.基于注解(Annotation)的装配<font color="#990000"><span lang="zh-cn">（最常用</span>）</font><br/>C.<span lang="zh-cn">自动装配
+（<font color="#990000">实际项目中很少用</font>）</span></p>
+<hr/>
+<h2>A.基于XML的装配</h2>
+<p>
+在Spring实例化Bean的过程中，Spring首先会调用Bean的默认构造方法来实例化Bean对象，然后通过反射的方式调用setter方法来注入属性值。因此，设值注入要求一个Bean必须满足以下两点要求：</p>
+<p><span lang="en-us"><font color="#0000FF">①</font>Bean</span>类必须提供一个默认的无参构造方法；<br/>
+<font color="#0000FF">②</font>Bean类必须为需要注入的属性提供对应的setter方法。</p>
+
+<p><span style="color: red;">例：基于XML的装配方式</span></p>
+
+<p><span style="color: blue;">(1)</span>在spring01的Web项目下路径src/main/java下
+	创建一个<span style="color: blue;">jmu.assemble</span>包，
+	在该包中创建<span style="color: blue;">Student</span>类。</p>
+<p align="center">
+<img border="0" src="1Spring基本应用.files/Student代码.png"></p>
+<p><span style="color: blue;">(2)</span>在<span style="color: blue;">applicationContext.xml</span>中，
+	在配置文件中定义一个id为<span style="color: blue;">stu1</span>和<span style="color: blue;">stu2</span>
+	的<span style="color: blue;">两个Bean</span>，通过XML来装配Bean。</p>
+<p align="center">
+<img border="0" src="1Spring基本应用.files/XML5.png"></p>
+<p><span style="color: blue;">(3)</span>创建测试类<span style="color: blue;">StudentTest</span>，
+	来测试XML装配方法。
+</p>
+<p align="center">
+<img border="0" src="1Spring基本应用.files/测试文件Student1.png"></p>
+
+<hr/>
+<h2>B.基于Annotation的装配 （最常用）</h2>
+<p>&nbsp; 
+	传统Spring使用XML文件来对bean进行注入，存在两个<span style="color: red;">缺点</span>：<br/>
+(1)如果应用中有很多Bean时，会导致XML配置文件过于臃肿，给后续的维护和升级工作带来一定的困难。<br/>
+(2)开发中不断在.java和.xml中切换，思维上的不连贯会降低开发的效率<br/>
+为此，Spring提供了对Annotation（注解）技术的全面支持。</p>
+<p align="center">
+	<img src="1Spring基本应用.files/注解举例.png" />
+</p>
+<table border="1" width="78%" align=center>
+	<tr bgcolor=#99FFCC >
+		<td>Annotation</td>
+		<td width="1236">说明</td>
+	</tr>
+	<tr>
+		<td><span lang="en-us">@Component</span></td>
+		<td width="1236">仅表示一个组件(Bean)，可以作用在任何层次</td>
+	</tr>
+	<tr>
+		<td><span lang="en-us">@Repository</span><font color="#FF0000">☆</font></td>
+		<td width="1236"><span lang="zh-cn">用于数据访问层</span>(DAO)<span lang="zh-cn">的类标识为Spring中的Bean</span></td>
+	</tr>
+	<tr>
+		<td><span lang="en-us">@Service</span><font color="#FF0000">☆</font></td>
+		<td width="1236"><span lang="zh-cn">用于业务层</span>(Service)<span lang="zh-cn">的类标识为Spring中的Bean</span></td>
+	</tr>
+	<tr>
+		<td><span lang="en-us">@Controller</span><font color="#FF0000">☆</font></td>
+		<td width="1236"><span lang="zh-cn">用于控制层</span>(Controller)<span lang="zh-cn">的类标识为Spring中的Bean</span></td>
+	</tr>
+	<tr>
+		<td><span lang="en-us">@Autowired</span></td>
+		<td width="1236">用于对Bean的属性变量、属性的setter方法及构造方法进行标注，配合对应的注解器完成Bean的自动配置工作</td>
+	</tr>
+	<tr>
+		<td><span lang="en-us">@Resource</span></td>
+		<td width="1236">作用与@Autowired<span lang="zh-cn">一样，区别：</span>@Autowir<span lang="zh-cn">ed按照Bean<font color="#0000FF">类型</font>装配，</span>@Resource<span lang="zh-cn">按照Bean<font color="#0000FF">实例名称</font>进行装配</span></td>
+	</tr>
+	<tr>
+		<td><span lang="en-us">@Qualifier</span></td>
+		<td width="1236">与@Autowired<span lang="zh-cn">注解配合使用，会将默认的按Bean类型装配修改为按Bean实例名称装配，Bean的实例名称由</span>@Qualifier<span lang="zh-cn">注解的参数指定</span></td>
+	</tr>
+</table>
+<p><span style="background-color: #FFFF00">注意：</span>Spring4.0<span lang="zh-cn">以上版本使用注解方式，需要用到Spring 
+AOP的JAR包</span><span style="background-color: #FFFF00">spring-aop-5.*.*.RELEASE.jar</span><span lang="zh-cn">，否则运行时会报出“</span>java.lang.NoClassDefFound 
+Error:org/springframework/aop/TargetSource<span lang="zh-cn">”的错误。</span></p>
+<p align="center">
+<img border="0" src="1Spring基本应用.files/加入aop包.png" ></p>
+<p><span style="color: red;">例：基于Annotation的装配方式</span></p>
+
+<p><span style="color: blue;">(1)</span>在spring01的Web项目下路径src/main/java下
+	创建一个<span style="color: blue;">jmu.annotation</span>包，
+	在该包中创建<span style="color: blue;">BookDAO</span>接口，并在接口中定义一个save()方法。</p>
+<p>在<span style="color: blue;">jmu.annotation</span>包中创建接口实现类
+	<span style="color: blue;">BookDAOImpl</span>，
+	加上注解<span style="color: blue;">@Repository("bookDAO")</span>。</p>
+<p align="center">
+<img border="0" src="1Spring基本应用.files/BookDAO接口代码.png"></p>
+<p><span style="color: blue;">(2)</span>在<span style="color: blue;">jmu.annotation</span>中，
+	创建接口<span style="color: blue;">BookService</span>,在接口中同样定义一个save()方法。
+</p>
+<p>在<span style="color: blue;">jmu.annotation</span>中，
+	创建接口<span style="color: blue;">BookService</span>的实现类
+	<span style="color: blue;">BooktServiceImpl</span>。
+</p>
+<p align="center">
+<img border="0" src="1Spring基本应用.files/BookService代码.png"></p>
+<p><span style="color: blue;">(3)</span>创建控制器类<span style="color: blue;">BookController</span>。
+</p>
+<p align="center">
+<img border="0" src="1Spring基本应用.files/BookController代码.png"></p>
+<p><span style="color: blue;">(4)</span>在<span style="color: blue;">src/main/resources</span>下新创建
+	一个配置文件<span style="color: blue;">applicationContext2.xml</span>。
+	可以从模板<span style="color: darkblue;">applicationContext-aop.xml</span>中复制粘贴。
+</p>
+<p>&nbsp;在<span style="color: blue;">applicationContext2.xml</span>中加上注解扫描包，通知Spring扫描指定包下所有的Bean，进行注解解析。</p>
+<p align="center">
+<img border="0" src="1Spring基本应用.files/aopxml.png"></p>
+<p><span style="color: blue;">(5)</span>创建测试类<span style="color: blue;">BookControllerTest</span>，
+	来测试注解方法。
+</p>
+<p align="center">
+<img border="0" src="1Spring基本应用.files/测试文件Book.png"></p>
+
+<hr/>
+<h2>C.自动装配（实际项目中很少用，不讲）</h2>
+<p align="left">
+缺点：</p>
+<p align="left">
+<span lang="en-us">(1)</span>只能一次装配所有属性，若只希望装配个别属性时，不行。</p>
+<p align="left">
+<span lang="en-us">(2)autowire</span>要么根据类型自动装配，要么根据名称自动装配，不能两者兼而有之。</p>
+<p align="left">
+<span lang="en-us">(3)一般情况下，在实际的项目中很少使用自动装配功能，因为和自动装配功能所带来的好处相比，明确清晰地配置更有说服力。</span></p>
+<hr size=3  color=green>
+<a name="s3"></a><h1>3 Spring的AOP技术</h1>
+<h2>引例：加减乘除计算器的日志记录</h2>
+<p><span style="color: blue;">(1)</span>在spring01的Web项目下路径src/main/java下
+	创建一个<span style="color: blue;">jmu.cal</span>包，
+	在该包中创建<span style="color: blue;">CalDAO</span>接口，并在接口中定义加减乘除方法。</p>
+<p align="center">
+<img border="0" src="1Spring基本应用.files/CalDAO1.png"></p>
+<p><span style="color: blue;">(2)</span>在<span style="color: blue;">jmu.cal</span>包中
+	创建CalDAO接口的实现类<span style="color: blue;">CalDAOImpl</span>实现加减乘除方法。</p>
+<p align="center">
+<img border="0" src="1Spring基本应用.files/CalDAOImpl1.png"></p>
+<p><span style="color: blue;">(3)</span>在配置文件
+	<span style="color: blue;">applicationContext2.xml</span>中加入
+	<span style="color: blue;">jmu.cal</span>的扫描包。</p>
+<p align="center">
+<img border="0" src="1Spring基本应用.files/aopxml2.png"></p>
+<p><span style="color: blue;">(4)</span>创建测试类<span style="color: blue;">CalDAOImplTest</span>。
+</p>
+<p align="center">
+<img border="0" src="1Spring基本应用.files/测试文件CalTest1.png"></p>
+
+<h2>存在的问题：</h2>
+<p align="left"><font color="#0000FF">☆</font>代码混乱：越来越多的非业务需求(日志和验证等)加入后, 原有的业务方法急剧膨胀.  每个方法在处理核心逻辑的同时还必须兼顾其他多个关注点。<br/>
+<font color="#0000FF">☆</font>代码分散: 以日志需求为例, 只是为了满足这个单一需求, 
+就不得不在多个模块（方法）里多次重复相同的日志代码. 如果日志需求发生变化, 必须修改所有模块。
+</p>
+<hr/>
+<h2>AOP</h2>
+<p>　&nbsp; AOP(Aspect-Oriented Programming, 面向切面编程): 是一种新的方法论, 是对传统 OOP(Object-Oriented Programming, 面向对象编程) 的补充。<br/>
+&nbsp;&nbsp;
+AOP 的主要编程对象是切面(aspect), 而切面模块化横切关注点。<br/>
+&nbsp;&nbsp;
+在应用 AOP 编程时, 仍然需要定义公共功能, 但可以明确的定义这个功能在哪里, 以什么方式应用, 并且不必修改受影响的类. 这样一来横切关注点就被模块化到特殊的对象(切面)里。</p>
+<p align="center">
+<img border="0" src="1Spring基本应用.files/切面.png" width="952" height="565"><p>AOP的<font color="#990000">好处</font>:<br/>
+<p><font color="#0000FF">☆</font>每个事物逻辑位于一个位置, 代码不分散, 便于维护和升级。<br/>
+
+<font color="#0000FF">☆</font>业务模块更简洁, 只包含核心业务代码。</p>
+<h2>相关概念：</h2>
+<p>
+<font color="#0000FF">☆</font>切面(Aspect):  横切关注点(跨越应用程序多个模块的功能)被模块化的特殊对象。<br/>
+
+<font color="#0000FF">☆</font>通知(Advice):  切面必须要完成的工作。<br/>
+
+<font color="#0000FF">☆</font>目标(Target): 被通知的对象。<br/>
+
+<font color="#0000FF">☆</font>代理(Proxy): 向目标对象应用通知之后创建的对象。<br/>
+
+<font color="#0000FF">☆</font>连接点（Joinpoint）：程序执行的某个特定位置——物理意义上的概念。<br/>
+
+<font color="#0000FF">☆</font>切点（pointcut）：每个类都拥有多个连接点--逻辑意义上的概念。</p>
+<p align="center">
+<img border="0" src="1Spring基本应用.files/AOP图.png" width="1221" height="831"></p>
+<h2>非主流——基于XML的声明式AspectJ（了解一下配置顺序）　</h2>
+<p align="center">
+<img border="0" src="1Spring基本应用.files/基于XML的声明式AspectJ.png" width="935" height="717"></p>
+<h2>主流AOP技术——基于注解的声明式AspectJ</h2>
+<table border="1" width="57%" align=center>
+<caption>AspectJ的注解及其描述</caption>
+	<tr bgcolor=#99FFCC>
+		<td width="180">注解名称</td>
+		<td>说明</td>
+	</tr>
+	<tr>
+		<td width="180">@Aspect</td>
+		<td>定义一个切面</td>
+	</tr>
+	<tr>
+		<td width="180">@Pointcut</td>
+		<td>定义切入点的表达式。还需要定义一个返回值为void，方法体为空的方法</td>
+	</tr>
+	<tr>
+		<td width="180">@Before</td>
+		<td><span lang="zh-cn">用于定义前置通知，通常需要指定一个value属性值（切入点）</span></td>
+	</tr>
+	<tr>
+		<td width="180">@After</td>
+		<td><span lang="zh-cn">用于定义最终final通知，不管是否异常，该通知都会执行，通常需要指定一个value属性值（切入点）</span></td>
+	</tr>
+	<tr>
+		<td width="180">@AfterReturning</td>
+		<td><span lang="zh-cn">用于定义后置通知，通常需要指定一个value属性值（切入点）
+		，一个returning属性值（方法返回值）</span></td>
+	</tr>
+	<tr>
+		<td width="180">@Around</td>
+		<td><span lang="zh-cn">用于定义环绕通知，通常需要指定一个value属性值（切入点）</span></td>
+	</tr>
+		<tr>
+		<td width="180">@AfterThrowing</td>
+		<td><span lang="zh-cn">用于定义异常通知，通常需要指定一个value属性值（切入点）
+		，一个throwing属性值（方法抛出的异常）</span></td>
+	</tr>
+</table>
+<p align="center">
+<img border="0" src="1Spring基本应用.files/AOP技术JAR包.png" ></p>
+<p align="left">
+<span lang="zh-cn"><font color="#FF0000">例</font>：将<u>验证参数</u>、<u>前置日志</u>、
+	<u>后置日志</u>“<font color="#FF0000">织入</font>”四则运算中。</span></p>
+<p><span style="color: blue;">(1)</span>在spring01的Web项目下路径src/main/java下
+	创建一个<span style="color: blue;">jmu.calaop</span>包，
+	在该包中同样创建<span style="color: blue;">CalDAO2</span>接口，并在接口中定义加减乘除方法。</p>
+<p align="center">
+<img border="0" src="1Spring基本应用.files/CalDAO2.png"></p>
+<p><span style="color: blue;">(2)</span>在<span style="color: blue;">jmu.calaop</span>包中
+	创建CalDAO2接口的实现类<span style="color: blue;">CalDAO2Impl</span>
+	实现加减乘除的<span style="color: blue;">核心</span>方法。</p>
+<p align="center">
+<img border="0" src="1Spring基本应用.files/CalDAO2Impl2.png"></p>
+<p><span style="color: blue;">(3)</span>在<span style="color: blue;">jmu.calaop</span>包中
+	创建日志切面类<span style="color: blue;">LoggingAspect</span>。</p>
+<p><span style="background-color: yellow;">A.</span>切面首先是一个IoC中的Bean，即加入
+	<span style="color: blue;">@Component</span>;
+</p>
+<p><span style="background-color: yellow;">B.</span>加入切面注解,
+	<span style="color: blue;">@Aspect</span>;
+</p>
+<p><span style="background-color: yellow;">C.</span>在类中声明各种通知（声明一个方法，在方法前加
+	<span style="color: blue;">@Before</span>或<span style="color: blue;">@After</span>
+	或<span style="color: blue;">@AfterReturning</span>
+	或<span style="color: blue;">@Around</span>
+	或<span style="color: blue;">@AfterThrowing</span>注解。
+</p>
+<p>&nbsp;可以在通知方法中声明一个类型为JoinPoint(org.aspectj.lang.JoinPoint)
+	<span style="background-color: yellow;">而非</span>
+			<i><u>org.aopalliance.intercept</u></i>
+			参数，即可访问连接点的细节，如方法名和参数值。</p>
+<p align="center">
+<img border="0" src="1Spring基本应用.files/LoggingAspect.png"></p>
+<p><span style="color: blue;">(4)</span>在<span style="color: blue;">jmu.calaop</span>包中
+	创建验证切面类<span style="color: blue;">ValidateAspect</span>，
+	把横切关注点验证参数的代码抽象到该类中。</p>
+<p align="center">
+<img border="0" src="1Spring基本应用.files/ValidateAspect.png"></p>
+<p><span style="color: blue;">(5)</span>在配置文件
+	<span style="color: blue;">applicationContext2.xml</span>中加入
+	<span style="color: blue;">jmu.calaop</span>的扫描包;<br/>
+       基于注解方式的配置<span style="color: red;">&lt;aop:aspectj-autoproxy/&gt;</span>
+</p>
+<p align="center">
+<img border="0" src="1Spring基本应用.files/aopxml3.png"></p>
+<p><span style="color: blue;">(6)</span>创建测试类<span style="color: blue;">CalDAO2ImplTest</span>。
+</p>
+<p align="center">
+<img border="0" src="1Spring基本应用.files/测试文件CalTest2.png"></p>
+
+
+<hr size="3" color="green"/>
+<h1><a name="s4"></a>4 Spring 小结</h1>
+<p align="center">
+<img border="0" src="1Spring基本应用.files/spring是什么.png" ></p>
+<p align="center">
+<img border="0" src="1Spring基本应用.files/spring模块.jpg"></p>
+<hr size="3" color="green"/>
+</body>
+
+</html>

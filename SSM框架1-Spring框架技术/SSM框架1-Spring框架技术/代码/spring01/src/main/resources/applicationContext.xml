@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <bean id="studentDAO" class="jmu.ioc.StudentDAOImpl"/>
+    <bean id="bean1" class="jmu.contructor.Bean1"/>
+    <bean id="scope1" class="jmu.scope.Scope" scope="singleton"/>
+    <bean id="scope2" class="jmu.scope.Scope" scope="prototype"/>
+    <!--使用构造注入方式装配Student实例-->
+    <bean id="stu1" class="jmu.assemble.Student">
+        <constructor-arg index="0" value="1001"/>
+        <constructor-arg index="1" value="tom"/>
+        <constructor-arg index="2">
+            <list>
+                <value>"constructorvalue1"</value>
+                <value>"constructorvalue2"</value>
+            </list>
+        </constructor-arg>
+    </bean>
+    <!--使用setter注入方式装配Student实例-->
+    <bean id="stu2" class="jmu.assemble.Student">
+        <property name="studentId" value="1002"/>
+        <property name="studentName" value="Jack"/>
+        <property name="list">
+            <list>
+                <value>"listvalue1"</value>
+                <value>"listvalue2"</value>
+            </list>
+        </property>
+    </bean>
+
+
+</beans>

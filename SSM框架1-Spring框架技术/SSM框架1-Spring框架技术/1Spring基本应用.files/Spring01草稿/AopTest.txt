@@ -1,0 +1,14 @@
+package cn.cal.aop;
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+public class AopTest {
+
+	public static void main(String[] args) {
+		ApplicationContext app = new ClassPathXmlApplicationContext("cn/cal/aop/applicationContext.xml");
+		CalDAO cal = (CalDAO)app.getBean("cal");
+		cal.add(4, 3);
+		cal.div(10, 2);
+	}
+}

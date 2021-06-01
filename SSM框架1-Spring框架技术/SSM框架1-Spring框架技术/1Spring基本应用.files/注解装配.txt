@@ -1,0 +1,40 @@
+
+
+  持久化层:  BookDAOImpl.save（）
+            @Repository("bookDAO")
+            <jsp:useBean id="bookDAO" class="*.BookDAOImpl">
+
+  服务层：  BookServiceImpl 先调用BookDAOImpl.save（）
+                   再调用BookServiceImpl.save()
+
+           @Service("bookService")
+           <jsp:useBean id="bookService" class="*.BookServiceImpl"> 
+
+           @Resource(name="bookDAO")
+	  private BookDAO bookDAO;
+                BookDAO bookDAO=new BookDAOImpl(); 
+
+
+  
+  控制层：BookController 先调用BookServiceImpl.save（）
+                   再调用BookController.save()
+
+         @Controller("bookController")
+          <jsp:useBean id="bookController" class="*.BookController"> 
+
+         @Resource(name="bookService")
+	private StuService bookService;
+        BookService bookService=new BookServiceImpl();
+
+
+
+Dept表  DeptDAO  deleteDeptById(String deptId)
+User表  UserDAO  deleteUserById(String userId)
+delete * from user where deptId=?
+DeptService
+   deleteDeptAndUser(String deptId){
+       UserDAO. deleteUserById(String userId);
+       DeptDAO.deleteDeptById(String deptId)
+  }
+
+

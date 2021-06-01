@@ -1,0 +1,311 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>2 Spring数据库开发</title>
+<style type="text/css">
+<!--
+p,td {
+	font-family: "楷体_GB2312";
+	font-size: 26px;
+	font-weight: bold;
+}
+h1 {
+	font-family: "方正舒体";
+	font-size: 30px;
+	font-weight: bold;
+	color: #990000;
+}
+h2,caption{
+	font-family: "宋体";
+	font-size: 26px;
+	font-weight: bold;
+	color: #990000;
+}
+h3 {
+	font-family: "宋体";
+	font-size: 24px;
+	font-weight: bold;
+	color: #990000;
+}
+.STYLE1 {color: #0000FF}
+.STYLE2 {color: #000066}
+.STYLE3 {color: #FF0000}
+
+-->
+</style>
+</head>
+
+<body>
+<h1 align=center>2 Spring数据库开发</h1>
+<a name="top"></a>
+
+<p align=left><a href="#s1">1 Spring JDBC</a></p>
+<p align=left><a href="#s2">2 Spring JdbcTemplate的常用方法 </a></p>
+<p align=left><a href="#s3">3 Spring 事务管理 </a></p>
+<p align=left><a href="#s4">4 Spring 小结 </p>
+
+<hr size=3 color=green>
+<a name="s1"></a><h1>1 Spring JDBC</h1>
+<p>&nbsp; Spring的JDBC模块负责数据资源管理和错误处理，大大简化了开发人员对数据库的操作。</p>
+<p>&nbsp; 针对数据库的操作，Spring框架提供了JdbcTemplate类（Spring JDBC的核心类）。想要使用Spring JDBC就需要对其进行配置，这个配置工作是在配置文件applicationContext.xml中完成的，其配置<a target="_blank" href="2Spring数据库开发.files/applicationContext.xml">模板</a>如下所示。</p>
+<p align="center">
+<img border="0" src="2Spring数据库开发.files/JdbcTemplate模板.png"></p>
+<p>模板中定义了3个Bean：</p>
+<p><span style="color: blue;">☆</span>dataSource：对应类org.springframework.jdbc.datasource.DriverManagerDataSource<br/>
+<span style="color: blue;">☆</span>jdbcTemplate：对应类org.springframeworkjdbc.core.JdbcTemplate<br/>
+<span style="color: blue;">☆</span>需要注入类的Bean：</p>
+<table border="1" width="49%" align=center>
+<caption>dataSource的4个属性</caption>
+	<tr bgcolor=#99FFCC>
+		<td width="273">属性名</td>
+		<td>说明</td>
+	</tr>
+	<tr>
+		<td width="273">driverClassName</td>
+		<td><span lang="zh-cn">所使用的驱动名称，对应驱动JAR包中的Driver类</span></td>
+	</tr>
+	<tr>
+		<td width="273">url</td>
+		<td>数据源所在URL</td>
+	</tr>
+	<tr>
+		<td width="273">username</td>
+		<td>访问数据库的用户名</td>
+	</tr>
+	<tr>
+		<td width="273">password</td>
+		<td>访问数据库的密码</td>
+	</tr>
+</table>
+<hr size=3/>
+<h1><a name="s2"></a>2 Spring JdbcTemplate的常用方法</h1>
+<p>
+<a href="b1">2.1 execute()方法</a><br/>
+<a href="b2">2.2 update()方法</a><br/>
+<a href="b3">2.3 query()方法</a><br/>
+</p>
+<hr/>
+<h2><a name="b1"></a>2.1 execute()方法</h2>
+<p>
+execute(String sql)方法能够完成执行SQL语句的功能。下面以创建数据表的SQL语句为例，来演示此方法的使用。</span></p>
+<p>
+<span style="color: red;">例</span>：execute()方法</p>
+<p>
+<span style="color: blue;">(1)</span>在MySQL中，创建一个名为spring的数据库。</p>
+<p align="center">
+<img border="0" src="2Spring数据库开发.files/DB1.png" width="561" height="242"></p>
+<p>
+<span style="color: blue;">(2)</span>在IntelliJ IDEA中，创建一个名为<span style="color: blue;">spring02</span>的Maven项目，不选择模板。
+<br/>&nbsp;&nbsp;配置<span style="color: blue;">pom.xml</span>文件，
+导入所需要的各种依赖的jar包(spring-jdbc、spring-tx、mysql)。</p>
+<p>
+<span style="color: blue;">(3)</span>在src/main/resources目录下创建配置文件<span style="color: blue;">
+		applicationContext.xml</span>。</p>
+<p align="center">
+<img border="0" src="2Spring数据库开发.files/XML1.png"></p>
+<p>
+<span style="color: blue;">(4)</span>
+在src/main/java目录下创建<span style="color: blue;">jmu.jdbc</span>包，包中创建测试类
+<span style="color: blue;">JdbcTest</span>。</p>
+<p align="center">
+<img border="0" src="2Spring数据库开发.files/JdbcTest代码.png"></p>
+
+<hr/>
+<h2><a name="b2"></a>2.2 update()方法</h2>
+<p align="left">
+&nbsp; update()方法可以完成插入、更新和删除数据的操作。在JdbcTemplate类中，提供了一系列的update()方法。</p>
+<table border="1" width="95%" align=center>
+<caption>JdbcTemplate类中常用的update<span lang="en-us">()</span>方法</caption>
+	<tr bgcolor=#99FFCC>
+		<td width="483">方法</td>
+		<td>说明</td>
+	</tr>
+	<tr>
+		<td width="483"><span lang="en-us">int update(String sql)</span></td>
+		<td><span lang="zh-cn">直接执行传入的SQL语句，返回受影响的行数</span></td>
+	</tr>
+	<tr>
+		<td width="483"><span lang="en-us">int update(PreparedStatementCreator psc)</span></td>
+		<td>执行从PreparedStatementCreator<span lang="zh-cn">返回的语句，返回受影响的行数</span></td>
+	</tr>
+	<tr>
+		<td width="483"><span lang="en-us">int update(String sql,PreparedStatementSetter 
+		pss)</span></td>
+		<td>通过PreparedStatementSetter设置SQL语句中的参数，返回受影响的行数</td>
+	</tr>
+	<tr>
+		<td width="483"><span lang="en-us">int update(String sql,Object...args)</span></td>
+		<td>使用Object...<span lang="zh-cn">设置SQL语句中的参数，要求参数不能为NULL，并返回受影响的行数</span></td>
+	</tr>
+</table>
+<p align="left">
+<span style="color: red;">例</span>：update()方法</p>
+<p align="left">
+<span style="color: blue;">(1)</span>在项目spring02的<span style="color: blue;">
+	jmu.jdbc</span>包下创建<span style="color: blue;">Account</span>类。</p>
+<p align="center">
+<img border="0" src="2Spring数据库开发.files/Account代码.png"></p>
+<p align="left">
+<span style="color: blue;">(2)</span>在jmu.jdbc包下创建<span style="color: blue;">
+	接口AccountDAO</span>，定义添加、更新、删除账户的方法。</p>
+<p align="center">
+<img border="0" src="2Spring数据库开发.files/AccountDAO代码.png"></p>
+<p align="left">
+<span style="color: blue;">(3)</span>在jmu.jdbc</span>包下创建接口AccountDAO的实现类
+<span style="color: blue;">AccountDAOImpl</span>。</p>
+<p align="center">
+<img border="0" src="2Spring数据库开发.files/AccountDAOImpl.png"></p>
+<p align="left">
+<span style="color: blue;">(4)</span>在applicationContext.xml文件中定义一个id为
+<span style="color: blue;">accountDAO</span>的Bean，将jdbcTemplate注入到accountDAO实例中。</p>
+<p align="center">
+<img border="0" src="2Spring数据库开发.files/XML2.png"></p>
+<p align="left">
+<span style="color: blue;">(5)</span>在测试类JdbcTest中添加测试方法
+<span style="color: blue;">addAccountTest()</span>。</p>
+<p align="center">
+<img border="0" src="2Spring数据库开发.files/addAccount.png"></p>
+<p align="left">
+<span style="color: blue;">(6)</span>在测试类JdbcTest中添加测试方法
+<span style="color: blue;">updateAccountTest()</span>。</p>
+<p align="center">
+<img border="0" src="2Spring数据库开发.files/updateAccount.png"></p>
+
+<p align="left">
+<span style="color: blue;">(7)</span>在测试类JdbcTest中添加测试方法
+<span style="color: blue;">deleteAccountTest()</span>。</p>
+<p align="center">
+<img border="0" src="2Spring数据库开发.files/deleteAccount.png"></p>
+<hr/>
+<h2>2.3 query()</h2>
+<p>JdbcTemplate<span lang="zh-cn">类提供了大量的query</span>()<span lang="zh-cn">方法来处理各种对数据库表的查询操作。</span></p>
+<table border="1" width="95%" align=center  >
+<caption>JdbcTemplate中常用的query()<span lang="zh-cn">方法</span></caption>
+	<tr bgcolor=#99FFCC>
+		<td width="601"><span lang="zh-cn">方法</span></td>
+		<td>说明</td>
+	</tr>
+	<tr>
+		<td width="601">List query(String sql,RowMapper rowMapper)</td>
+		<td><span lang="zh-cn">执行SQL语句，并通过RowMapper返回一个List执行结果</span></td>
+	</tr>
+	<tr>
+		<td width="601">List query(String sql,PreparedStatementSetter 
+		pss,RowMapper rowMapper)</td>
+		<td>据SQL语句创建PreparedStatement对象，通过RowMapper将结果返回List中</td>
+	</tr>
+	<tr>
+		<td width="601">List query(String sql,Object[] obj,RowMapper rowMapper)</td>
+		<td><span lang="zh-cn">使用Object</span>[]<span lang="zh-cn">来设置SQL语句中的参数值，采用RowMapper回调方法可以直接返回List类型的数据</span></td>
+	</tr>
+	<tr>
+		<td width="601">List queryForObject(String sql,RowMapper rowMapper,Objec 
+		args)</td>
+		<td><span lang="zh-cn">将args参数绑定到SQL语句中，并通过RowMapper返回一个Object类型的单行记录</span></td>
+	</tr>
+	<tr>
+		<td width="601">List queryForList(String sql,Object[] args,class&lt;T&gt; 
+		elementType)</td>
+		<td>该方法可以返回多行数据的结果，但必须是返回列表，elementType参数返回的是List元素的类型</td>
+	</tr>
+</table>
+<p><font color="#FF0000">例</font>：query()<span lang="zh-cn">方法</span></p>
+<p><span style="color: blue;">(1)</span>向数据表account中插入几条数据。</p>
+<p align="center">
+<img border="0" src="2Spring数据库开发.files/DB6.png" ></p>
+<p><span style="color: blue;">(2)</span>在AccountDAO中创建通过id查询单个账户的方法
+	<span style="color: blue;">findById(int id)</span>、查询所有账户的方法<span style="color: blue;">findAll()</span>。</p>
+<p align="center">
+<img border="0" src="2Spring数据库开发.files/AccountDAO2.png"></p>
+<p><span style="color: blue;">(3)</span>在AccountDAOImpl中添加findById(int 
+id)和findAll()的具体实现方法。</p>
+<p align="center">
+<img border="0" src="2Spring数据库开发.files/findById.png" width="778" height="190">&nbsp;&nbsp;
+<img border="0" src="2Spring数据库开发.files/findAll.png" width="787" height="164"></p>
+<p><span style="color: blue;">(4)</span>在测试类JdbcTest中，添加测试方法
+	<span style="color: blue;">findAccountByIdTest()</span>。</p>
+<p align="center">
+<img border="0" src="2Spring数据库开发.files/findAccountByIdTest.png"></p>
+
+<p><span style="color: blue;">(5)</span>在测试类JdbcTest中，
+	添加测试方法<span style="color: blue;">findAllAccountTest()</span>。</p>
+<p align="center">
+<img border="0" src="2Spring数据库开发.files/findAllTest.png"></p>
+<p>RowMapper接口:将数据中的<u>每一行</u>封装成<u>用户定义的类</u></p>
+<p></p>
+<p align="center">
+<img border="0" src="2Spring数据库开发.files/RowMapper.png"></p>
+</p>
+<hr color="green" size=3/>
+<h1><a name="s3"></a>3 Spring 事务管理</h1>
+
+<p align="left">事务管理是企业级应用程序开发中必不可少的技术,  用来确保数据的<font color="#990000">完整性</font>和<font color="#990000">一致性</font>。</p>
+<p align="left">事务就是一系列的动作, 它们被当做一个单独的工作单元. 这些动作<i><u>要么全部完成</u></i>, <u><i>要么全部不起作用</i></u>。  
+　</p>
+<h2>事务的四个关键属性：</h2>
+<p>
+<span style="color: blue;">☆</span>原子性(atomicity): 事务是一个原子操作, 由一系列动作组成. 事务的原子性确保动作要么全部完成要么完全不起作用。<br/>
+<span style="color: blue;">☆</span>一致性(consistency): 一旦所有事务动作完成, 事务就被提交. 数据和资源就处于一种满足业务规则的一致性状态中。<br/>
+<span style="color: blue;">☆</span>隔离性(isolation): 可能有许多事务会同时处理相同的数据, 因此每个事物都应该与其他事务隔离开来, 防止数据损坏。<br/>
+<span style="color: blue;">☆</span>持久性(durability): 一旦事务完成, 无论发生什么系统错误, 它的结果都不应该受到影响. 通常情况下, 事务的结果被写到持久化存储器中。
+</p>
+<p>　Spring 既支持<u>编程式事务管理</u>, 也支持<u>声明式的事务管理</u>。</p>
+<p><font color="#990000">A.编程式事务管理</font>: 将事务管理代码嵌入到业务方法中来控制事务的提交和回滚<span lang="zh-cn">。</span>在编程式管理事务时, 
+必须在每个事务操作中包含额外的事务管理代码。</p>
+<p align="center">
+<img border="0" src="2Spring数据库开发.files/传统JDBC事务处理方式.png"></p>
+<p><font color="#990000">B.声明式事务管理:</font> 大多数情况下比编程式事务管理更好用。 
+它将事务管理代码从业务方法中分离出来, 以声明的方式来实现事务管理。事务管理作为一种横切关注点, 可以通过 AOP 方法模块化。 Spring 通过 
+Spring AOP 框架支持声明式事务管理，即<span style="background-color: #FFFF00">spring-tx-RELEASE.jar</span>包需导入。</p>
+
+<hr/>
+<h2>B. 声明式事务管理</h2>
+<p><font color="#FF0000">例</font>：转账功能的实现</p>
+<p><span style="color: blue;">(1)</span>项目spring02的pom.xml文件中已有
+	<span style="background-color: #FFFF00" lang="en-us">spring-tx-RELEASE.jar</span>依赖包、
+	<span style="background-color: #FFFF00">spring-aop-RELEASE.jar</span>依赖包。</p>
+
+<p><span style="color: blue;">(2)</span>在jmu.jdbc包下的接口AccountDAO中增加一个转账方法
+	<span style="color: blue;">transfer()</span>。</p>
+<p align="center">
+<img border="0" src="2Spring数据库开发.files/AccountDAO3.png"></p>
+<p><span style="color: blue;">(3)</span>在<span lang="en-us">jmu.jdbc</span>
+	包下的接口AccountDAO实现类AccountDAOImpl中实现transfer()方法。
+	并添加<span style="color: blue;">事务注解</span>。</p>
+<p align="center">
+<img border="0" src="2Spring数据库开发.files/transfer方法.png" ></p>
+<p><span style="color: blue;">(4)</span>修改配置文件applicationContext.xml</span>，
+	添加命名空间并编写事务管理的相关配置代码。</p>
+<p align="center">
+<img border="0" src="2Spring数据库开发.files/XML3.png" ></p>
+<p><span style="color: blue;">(5)</span>在jmu.jdbc包下的JdbcTest类中添加<span style="color: blue;">测试方法transTest()</span>。</p>
+<p align="center">
+<img border="0" src="2Spring数据库开发.files/转账测试方法.png"></p>
+<p align="center">
+<img border="0" src="2Spring数据库开发.files/注释.png" ></p>
+<p align="center">
+<img border="0" src="2Spring数据库开发.files/转账测试方法2.png"></p>
+<hr/>
+<h2>事务部分小结：</h2>
+<p><span style="color: blue;">(1)</span>在XML配置文件中</p>
+<p><span style="color: blue;">A.</span>配置事务管理器</span>class=&quot;org.springframework.jdbc.datasource.<span style="color: blue;">DataSourceTransactionManager</span>&quot;<span lang="zh-cn">，还需指明<span style="color: blue;">数据源</span>属性&lt;property&gt;</p>
+<p>
+<img border="0" src="2Spring数据库开发.files/tx1.png"></p>
+<p><span style="color: blue;">B.</span>注册事务管理器驱动</p>
+<p>
+<img border="0" src="2Spring数据库开发.files/tx2.png" width="667" height="48"></p>
+<p><span style="color: blue;">(2)</span>在需要事务管理的方法中加上事务注解</p>
+<p>
+<img border="0" src="2Spring数据库开发.files/tx3.png" width="786" height="331"></p>
+<p>
+<span style="color: blue;">☆</span>关于Spring 事务管理的传播行为、事务的隔离级别等<font color="#990000">自学</font>。</p>
+<hr size=3  color=green>
+<h1><a name="s4"></a>4 Spring 小结</h1>
+<p align="center">
+<img border="0" src="2Spring数据库开发.files/spring是什么.png" width="1031" height="532"></p>
+<p align="center">
+<img border="0" src="2Spring数据库开发.files/spring模块.jpg" width="720" height="540"></p>
+<hr size="3" color="green"/>
+</body>
+</html>

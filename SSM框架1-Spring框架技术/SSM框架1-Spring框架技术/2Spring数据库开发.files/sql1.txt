@@ -1,0 +1,13 @@
+create database spring;
+
+use spring;
+
+show tables;
+
+select * from account;
+
+insert into account(username,balance) values("Joy",100.0);
+insert into account(username,balance) values("Mary",500.0);
+insert into account(username,balance) values("Rose",2000.0);
+insert into account(username,balance) values("Bill",4000.0);
+
